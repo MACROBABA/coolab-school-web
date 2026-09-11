@@ -3,6 +3,6 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "build": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1"
+    "build": "node ./scripts/build.mjs"
   }
 }
