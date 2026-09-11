@@ -22,6 +22,7 @@
       }
 
       * { box-sizing: border-box; }
+      .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
       html { scroll-behavior: smooth; }
       body {
         margin: 0;
@@ -131,6 +132,112 @@
       .program-card h3 { margin-bottom: 10px; font-size: 1.28rem; letter-spacing: -0.03em; }
       .program-card p { margin-bottom: 0; color: var(--muted); font-size: 0.94rem; line-height: 1.6; }
       .program-message { min-height: 26px; margin: 20px 0 0; color: var(--blue); font-size: .92rem; font-weight: 800; }
+      .lab { position: relative; overflow: hidden; padding: 94px 0; color: white; background: #061d38; }
+      .lab::before { content: ""; position: absolute; width: 680px; height: 680px; right: -290px; top: -350px; border: 120px solid rgba(16,185,208,.12); border-radius: 50%; pointer-events: none; }
+      .lab .container { position: relative; z-index: 1; }
+      .lab-header { display: flex; align-items: end; justify-content: space-between; gap: 34px; margin-bottom: 36px; }
+      .lab-header h2 { max-width: 710px; margin: 14px 0 0; font-size: clamp(2.25rem, 4vw, 3.65rem); line-height: 1.02; letter-spacing: -.065em; }
+      .lab-header p { max-width: 360px; margin: 0; color: #b8d2e9; line-height: 1.7; }
+      .lab .eyebrow { color: white; background: rgba(255,255,255,.11); }
+      .live-pill { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 13px; color: #bcefff; font-size: .78rem; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
+      .live-pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); box-shadow: 0 0 0 5px rgba(247,191,39,.16); }
+      .lab-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 18px; }
+      .lab-panel { position: relative; min-width: 0; padding: 27px; overflow: hidden; border: 1px solid rgba(174,221,244,.18); border-radius: 24px; background: linear-gradient(135deg, rgba(14,64,111,.86), rgba(7,39,76,.94)); box-shadow: 0 20px 48px rgba(0,0,0,.16); }
+      .lab-panel h3 { margin: 0 0 8px; font-size: 1.5rem; letter-spacing: -.04em; }
+      .lab-panel > p { color: #bbd4e9; line-height: 1.6; }
+      .builder-panel { min-height: 510px; }
+      .robot-stage { position: absolute; inset: 0 0 0 42%; min-height: 390px; background: radial-gradient(circle at 50% 42%, rgba(16,185,208,.18), transparent 44%); }
+      #builder-canvas { width: 100%; height: 100%; min-height: 390px; display: block; cursor: grab; touch-action: none; }
+      .builder-copy { position: relative; z-index: 2; max-width: 50%; }
+      .part-options { display: grid; gap: 14px; margin: 22px 0 0; padding: 0; border: 0; }
+      .part-options legend { margin-bottom: 8px; color: #d6ecf8; font-size: .85rem; font-weight: 800; }
+      .part-row { display: grid; grid-template-columns: 78px 1fr; gap: 9px; align-items: center; color: #b8d2e9; font-size: .82rem; font-weight: 800; }
+      .part-choices { display: flex; flex-wrap: wrap; gap: 6px; }
+      .part-choice, .quick-prompt, .map-zone, .calendar-event, .chat-send, .game-start, .ar-button { border: 1px solid rgba(198,235,251,.22); border-radius: 11px; color: white; background: rgba(255,255,255,.08); font: inherit; font-size: .8rem; font-weight: 800; cursor: pointer; transition: transform 160ms ease, background 160ms ease, border-color 160ms ease; }
+      .part-choice { padding: 8px 9px; }
+      .part-choice:hover, .part-choice.is-active, .quick-prompt:hover, .map-zone:hover, .map-zone.is-active, .calendar-event:hover, .calendar-event.is-active { border-color: var(--cyan); background: rgba(16,185,208,.2); transform: translateY(-2px); }
+      .robot-status { position: relative; z-index: 2; max-width: 50%; margin: 22px 0 0; color: #a9dded !important; font-size: .86rem; font-weight: 750; }
+      .idea-form { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; margin-top: 20px; }
+      .idea-form label, .chat-form label { display: grid; gap: 7px; color: #c5dfef; font-size: .8rem; font-weight: 800; }
+      .idea-form label:first-child { grid-column: 1 / -1; }
+      .idea-form input, .idea-form select, .chat-form input { width: 100%; min-height: 45px; padding: 0 12px; border: 1px solid rgba(198,235,251,.22); border-radius: 11px; color: white; outline: none; background: rgba(255,255,255,.09); font: inherit; }
+      .idea-form select option { color: var(--ink); }
+      .idea-form input::placeholder, .chat-form input::placeholder { color: #9bbbd2; }
+      .idea-form input:focus, .idea-form select:focus, .chat-form input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(16,185,208,.16); }
+      .generate-button { grid-column: 1 / -1; min-height: 47px; border: 0; border-radius: 12px; color: var(--navy); background: var(--yellow); font: inherit; font-weight: 900; cursor: pointer; transition: transform 160ms ease, box-shadow 160ms ease; }
+      .generate-button:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(247,191,39,.2); }
+      .idea-output { min-height: 128px; margin-top: 17px; padding: 17px; border: 1px solid rgba(16,185,208,.28); border-radius: 16px; background: rgba(0,0,0,.14); }
+      .idea-output strong { display: block; margin-bottom: 6px; color: #fff; font-size: 1.03rem; }
+      .idea-output p { margin: 0; color: #b9d4e9; font-size: .9rem; line-height: 1.55; }
+      .game-panel, .ar-panel { min-height: 435px; }
+      .game-stats { display: flex; gap: 9px; margin: 18px 0 12px; }
+      .stat-chip { padding: 7px 10px; border-radius: 999px; color: #d6f7ff; background: rgba(16,185,208,.15); font-size: .78rem; font-weight: 850; }
+      .game-board { position: relative; height: 220px; overflow: hidden; border: 1px solid rgba(174,221,244,.22); border-radius: 18px; background: radial-gradient(circle at 30% 35%, rgba(16,185,208,.2), transparent 12%), linear-gradient(135deg, #082d54, #071a32); }
+      .game-board::before { content: ""; position: absolute; inset: 18px; border: 1px dashed rgba(188,239,255,.18); border-radius: 12px; pointer-events: none; }
+      .game-target { position: absolute; z-index: 2; width: 48px; height: 48px; display: none; place-items: center; border: 0; border-radius: 50%; color: var(--navy); background: var(--yellow); box-shadow: 0 0 0 8px rgba(247,191,39,.18); font-size: 1.2rem; cursor: crosshair; }
+      .game-target.is-visible { display: grid; }
+      .game-start { width: 100%; min-height: 46px; margin-top: 13px; color: var(--navy); background: var(--cyan); border: 0; }
+      .game-start:hover, .ar-button:hover, .chat-send:hover { transform: translateY(-2px); filter: brightness(1.06); }
+      .ar-stage { position: relative; height: 245px; overflow: hidden; border: 1px solid rgba(174,221,244,.22); border-radius: 18px; background: radial-gradient(circle, rgba(16,185,208,.18), rgba(6,28,56,.88)); }
+      .ar-stage video, .ar-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      .ar-stage canvas { pointer-events: none; }
+      .ar-placeholder { position: absolute; inset: 0; z-index: 1; display: grid; place-items: center; padding: 22px; color: #c5e8f5; text-align: center; line-height: 1.6; }
+      .ar-placeholder.is-hidden { display: none; }
+      .ar-actions { display: flex; gap: 10px; margin-top: 13px; }
+      .ar-button { flex: 1; min-height: 46px; border: 0; color: var(--navy); background: var(--yellow); }
+      .ar-button.secondary { color: #d7f4ff; border: 1px solid rgba(198,235,251,.22); background: rgba(255,255,255,.1); }
+      .ar-status { margin: 12px 0 0 !important; color: #a9dded !important; font-size: .84rem; }
+      .map-layout, .skill-layout { display: grid; grid-template-columns: 1fr .85fr; gap: 20px; align-items: center; }
+      .camp-map { position: relative; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; min-height: 285px; padding: 24px; border-radius: 18px; background: linear-gradient(145deg, #0a4e85, #06325f); }
+      .camp-map::before { content: "COOLAB"; position: absolute; left: 24px; top: 12px; color: rgba(255,255,255,.18); font-size: .68rem; font-weight: 900; letter-spacing: .16em; }
+      .map-zone { min-height: 86px; padding: 12px; text-align: left; }
+      .map-zone small { display: block; margin-top: 3px; color: #b9e7f4; font-weight: 600; }
+      .zone-detail { padding: 17px; border-radius: 16px; background: rgba(255,255,255,.08); }
+      .zone-detail h4 { margin: 0 0 8px; color: var(--yellow); font-size: 1.13rem; }
+      .zone-detail p { margin: 0; color: #c8dfef; font-size: .9rem; line-height: 1.6; }
+      .skill-chart { width: min(100%, 295px); margin: 0 auto; }
+      .skill-chart .chart-grid { fill: rgba(16,185,208,.05); stroke: rgba(190,242,255,.3); stroke-width: 1; }
+      .skill-chart .chart-value { fill: rgba(247,191,39,.35); stroke: var(--yellow); stroke-width: 2; transition: all 450ms ease; }
+      .skill-chart text { fill: #d5edf8; font-size: 8px; font-weight: 800; }
+      .skill-actions { display: grid; gap: 8px; }
+      .skill-actions button { padding: 10px 11px; border: 1px solid rgba(198,235,251,.22); border-radius: 10px; color: #e4f7ff; background: rgba(255,255,255,.07); text-align: left; font: inherit; font-size: .84rem; font-weight: 750; cursor: pointer; }
+      .skill-actions button:hover { background: rgba(16,185,208,.18); }
+      .progress-list { display: grid; gap: 10px; margin-top: 17px; }
+      .progress-row { display: grid; grid-template-columns: 92px 1fr auto; gap: 8px; align-items: center; color: #d2ebf6; font-size: .79rem; font-weight: 800; }
+      .progress-track { height: 8px; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,.12); }
+      .progress-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--cyan), var(--yellow)); transition: width 450ms ease; }
+      .progress-tech { width: 72%; }
+      .progress-creative { width: 64%; }
+      .progress-team { width: 81%; }
+      .parent-dashboard { display: grid; grid-template-columns: 1.2fr .8fr; gap: 18px; margin-top: 18px; }
+      .dashboard-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 11px; }
+      .dashboard-stat { padding: 18px; border-radius: 16px; background: rgba(255,255,255,.08); }
+      .dashboard-stat strong { display: block; color: var(--yellow); font-size: 1.5rem; letter-spacing: -.04em; }
+      .dashboard-stat span { color: #b9d4e9; font-size: .78rem; font-weight: 750; }
+      .project-update { padding: 20px; border-radius: 16px; background: linear-gradient(135deg, rgba(16,185,208,.2), rgba(247,191,39,.12)); }
+      .project-update h4 { margin: 0 0 8px; font-size: 1.1rem; }
+      .project-update p { margin: 0; color: #d0e9f5; font-size: .9rem; line-height: 1.6; }
+      .calendar-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      .calendar-top h3 { margin: 0; }
+      .month-switch { display: flex; gap: 7px; }
+      .month-switch button { width: 32px; height: 32px; border: 1px solid rgba(198,235,251,.23); border-radius: 9px; color: white; background: rgba(255,255,255,.08); font: inherit; cursor: pointer; }
+      .calendar-list { display: grid; gap: 8px; margin-top: 18px; }
+      .calendar-event { display: grid; grid-template-columns: 45px 1fr; gap: 10px; width: 100%; padding: 11px; text-align: left; }
+      .calendar-event time { display: grid; place-items: center; border-radius: 9px; color: var(--navy); background: var(--yellow); font-weight: 950; }
+      .calendar-event span { display: grid; gap: 2px; }
+      .calendar-event small { color: #b6d4e8; font-weight: 600; }
+      .calendar-detail { min-height: 46px; margin: 14px 0 0 !important; color: #bfeaf5 !important; font-size: .84rem; }
+      .chat-panel { display: grid; grid-template-columns: .9fr 1.1fr; gap: 24px; }
+      .chat-panel > div > p { max-width: 400px; }
+      .quick-prompts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+      .quick-prompt { padding: 9px 11px; }
+      .chat-window { min-height: 250px; display: grid; grid-template-rows: 1fr auto; padding: 12px; border-radius: 18px; background: rgba(0,0,0,.17); border: 1px solid rgba(174,221,244,.18); }
+      .chat-messages { display: grid; align-content: start; gap: 10px; overflow: auto; max-height: 225px; padding: 3px; }
+      .chat-message { max-width: 86%; padding: 10px 12px; border-radius: 12px 12px 12px 3px; color: #e6f8ff; background: rgba(16,185,208,.18); font-size: .88rem; line-height: 1.5; }
+      .chat-message.user { justify-self: end; border-radius: 12px 12px 3px 12px; color: #173554; background: var(--yellow); }
+      .chat-form { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 12px; }
+      .chat-form label { display: block; }
+      .chat-send { min-width: 78px; color: var(--navy); background: var(--cyan); border: 0; }
       .experience { background: var(--navy); color: white; }
       .experience .section-heading h2 { max-width: 580px; }
       .experience .section-heading p { color: #bed9ed; }
@@ -195,6 +302,12 @@
         .section-heading { display: block; }
         .section-heading p { margin-top: 18px; }
         .program-grid { grid-template-columns: repeat(2, 1fr); }
+        .lab-header { display: block; }
+        .lab-header p { margin-top: 18px; }
+        .robot-stage { position: relative; inset: auto; margin: 22px -27px -27px; min-height: 300px; }
+        #builder-canvas { min-height: 300px; }
+        .builder-copy, .robot-status { max-width: none; }
+        .parent-dashboard { grid-template-columns: 1fr; }
       }
       @media (max-width: 560px) {
         .container { width: min(100% - 28px, 1160px); }
@@ -209,6 +322,16 @@
         .three-stage { border-radius: 22px; }
         .note-creative { right: -2px; }
         .program-grid, .parent-grid { grid-template-columns: 1fr; }
+        .lab { padding: 70px 0; }
+        .lab-grid, .map-layout, .skill-layout, .chat-panel { grid-template-columns: 1fr; }
+        .lab-panel { padding: 22px; border-radius: 20px; }
+        .builder-panel { min-height: auto; }
+        .robot-stage { margin: 20px -22px -22px; min-height: 280px; }
+        #builder-canvas { min-height: 280px; }
+        .idea-form { grid-template-columns: 1fr; }
+        .idea-form label:first-child, .generate-button { grid-column: auto; }
+        .dashboard-summary { grid-template-columns: 1fr; }
+        .ar-stage { height: 220px; }
         .section { padding: 70px 0; }
         .section-heading h2 { font-size: 2.15rem; }
         .cta-panel { padding: 42px 28px; }
@@ -225,6 +348,7 @@
         </a>
         <nav class="nav-links" aria-label="Əsas naviqasiya">
           <a href="#haqqimizda">Coolab nədir?</a>
+          <a href="#coolab-lab">Coolab Lab</a>
           <a href="#proqramlar">Proqramlar</a>
           <a href="#dusergeler">Düşərgələr</a>
           <a href="#valideynler">Valideynlər üçün</a>
@@ -258,6 +382,120 @@
             </div>
             <div class="visual-note note-creative"><strong>İdeya + hərəkət</strong><span>Hər gün yeni təcrübə</span></div>
             <div class="visual-note note-robot"><strong>Layihə əsaslı öyrənmə</strong><span>İdeyadan real nəticəyə</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="lab" id="coolab-lab">
+        <div class="container">
+          <div class="lab-header reveal">
+            <div>
+              <span class="eyebrow">Coolab Lab</span>
+              <h2>Öyrənməyi sına, qur və öz yolunu kəşf et.</h2>
+            </div>
+            <p>Bu laboratoriyada hər hissə sadəcə baxmaq üçün deyil: robot qur, oyun oyna, ideya yarat və öz inkişaf xəritəni gör.</p>
+          </div>
+
+          <div class="lab-grid">
+            <article class="lab-panel builder-panel reveal" id="robot-builder">
+              <div class="builder-copy">
+                <span class="live-pill">3D robot studiyası</span>
+                <h3>Öz robotunu qur</h3>
+                <p>Hissələri seç, robotun görünüşünü dəyiş və səhnəni sürüşdürərək fərqli bucaqlardan izləyin.</p>
+                <fieldset class="part-options">
+                  <legend>Robot hissələri</legend>
+                  <div class="part-row"><span>Başlıq</span><div class="part-choices"><button class="part-choice is-active" type="button" data-robot-part="head" data-robot-value="cube">Kub</button><button class="part-choice" type="button" data-robot-part="head" data-robot-value="round">Dairə</button></div></div>
+                  <div class="part-row"><span>Gövdə</span><div class="part-choices"><button class="part-choice is-active" type="button" data-robot-part="body" data-robot-value="blue">Mavi</button><button class="part-choice" type="button" data-robot-part="body" data-robot-value="yellow">Sarı</button><button class="part-choice" type="button" data-robot-part="body" data-robot-value="orange">Narıncı</button></div></div>
+                  <div class="part-row"><span>Hərəkət</span><div class="part-choices"><button class="part-choice is-active" type="button" data-robot-part="move" data-robot-value="wheels">Təkər</button><button class="part-choice" type="button" data-robot-part="move" data-robot-value="hover">Uçuş</button></div></div>
+                </fieldset>
+                <p class="robot-status" id="robot-status" aria-live="polite">Mavi təkərli kəşf robotu hazırdır.</p>
+              </div>
+              <div class="robot-stage"><canvas id="builder-canvas" aria-label="İnteraktiv üçölçülü robot konstrukturu"></canvas></div>
+            </article>
+
+            <article class="lab-panel reveal" id="idea-generator">
+              <span class="live-pill">AI ideya generatoru</span>
+              <h3>Layihə fikrini tap</h3>
+              <p>Maraqlandığın mövzunu yaz, Coolab üçün başlanğıc layihə planı yarat.</p>
+              <form class="idea-form" id="idea-form">
+                <label>Maraqlandığın mövzu<input id="idea-interest" name="interest" maxlength="46" placeholder="Məsələn: kosmos, oyun, təbiət" /></label>
+                <label>İstiqamət<select id="idea-track" name="track"><option value="tech">Texnologiya</option><option value="design">Dizayn</option><option value="social">Sosial layihə</option></select></label>
+                <label>Format<select id="idea-format" name="format"><option value="team">Komanda ilə</option><option value="solo">Fərdi</option><option value="camp">Düşərgə üçün</option></select></label>
+                <button class="generate-button" type="submit">Mənə ideya ver ✦</button>
+              </form>
+              <div class="idea-output" id="idea-output" aria-live="polite"><strong>“İşıqlı Şəhər”</strong><p>LED işıqlar və sadə sensorla enerjiyə qənaət edən kiçik şəhər maketi qur. 3 addım: planla, qur, təqdim et.</p></div>
+            </article>
+          </div>
+
+          <div class="lab-grid">
+            <article class="lab-panel game-panel reveal" id="mini-game">
+              <span class="live-pill">30 saniyəlik oyun</span>
+              <h3>Enerji toplama</h3>
+              <p>Sarı enerji nöqtələrini tut. Hər düzgün klik robototexnika bacarığını artırır.</p>
+              <div class="game-stats"><span class="stat-chip">Xal: <b id="game-score">0</b></span><span class="stat-chip">Vaxt: <b id="game-time">30</b> s</span></div>
+              <div class="game-board" id="game-board" aria-label="Enerji toplama oyun sahəsi"><button class="game-target" id="game-target" type="button" aria-label="Enerji nöqtəsini topla">✦</button></div>
+              <button class="game-start" id="game-start" type="button">Oyuna başla</button>
+            </article>
+
+            <article class="lab-panel ar-panel reveal" id="ar-lab">
+              <span class="live-pill">AR laboratoriyası</span>
+              <h3>Robotu məkanında gör</h3>
+              <p>Kameranı aç və 3D Coolab robotunu ekranında sına. İcazə yalnız düyməyə kliklədikdə soruşulur.</p>
+              <div class="ar-stage"><video id="ar-video" autoplay muted playsinline></video><canvas id="ar-canvas" aria-hidden="true"></canvas><div class="ar-placeholder" id="ar-placeholder">Kameranı açdıqdan sonra robot görüntünün üzərində görünəcək.</div></div>
+              <div class="ar-actions"><button class="ar-button" id="ar-start" type="button">Kameranı aç</button><button class="ar-button secondary" id="ar-stop" type="button">Bağla</button></div>
+              <p class="ar-status" id="ar-status" aria-live="polite">Hazırdır — kamera hələ aktiv deyil.</p>
+            </article>
+          </div>
+
+          <div class="lab-grid">
+            <article class="lab-panel reveal" id="camp-map">
+              <span class="live-pill">İnteraktiv düşərgə xəritəsi</span>
+              <h3>Bu gün hara gedirik?</h3>
+              <div class="map-layout">
+                <div class="camp-map" aria-label="Coolab düşərgə zonaları">
+                  <button class="map-zone is-active" type="button" data-zone="robot"><strong>Robot lab</strong><small>Qur və sına</small></button>
+                  <button class="map-zone" type="button" data-zone="art"><strong>Dizayn studiyası</strong><small>Rəng və forma</small></button>
+                  <button class="map-zone" type="button" data-zone="team"><strong>Komanda meydanı</strong><small>Oyun və liderlik</small></button>
+                  <button class="map-zone" type="button" data-zone="nature"><strong>Kəşf zonası</strong><small>Təbiət və elm</small></button>
+                </div>
+                <div class="zone-detail" id="zone-detail" aria-live="polite"><h4>Robot lab</h4><p>Sensorlarla tanış ol, robotunun missiyasını seç və komandanla sınaq meydanına çıx.</p></div>
+              </div>
+            </article>
+
+            <article class="lab-panel reveal" id="skill-map">
+              <span class="live-pill">Bacarıq xəritən</span>
+              <h3>Gücün haradadır?</h3>
+              <div class="skill-layout">
+                <svg class="skill-chart" viewBox="0 0 200 185" role="img" aria-label="Bacarıqların radar qrafiki">
+                  <polygon class="chart-grid" points="100,22 174,75 146,160 54,160 26,75"></polygon><polygon class="chart-grid" points="100,48 149,83 130,139 70,139 51,83"></polygon><polygon class="chart-value" id="skill-polygon" points="100,42 142,80 124,130 74,138 59,83"></polygon>
+                  <text x="87" y="14">Texnologiya</text><text x="161" y="74">Yaradıcılıq</text><text x="123" y="177">Komanda</text><text x="5" y="162">Liderlik</text><text x="3" y="73">Təqdimat</text>
+                </svg>
+                <div class="skill-actions"><button type="button" data-skill="tech">⚙ Robot qur</button><button type="button" data-skill="creative">✦ Dizayn yarat</button><button type="button" data-skill="team">◎ Komandaya qoşul</button><button type="button" data-skill="present">↗ Fikrini paylaş</button></div>
+              </div>
+              <div class="progress-list" id="progress-list" aria-label="Bacarıq göstəriciləri"></div>
+            </article>
+          </div>
+
+          <div class="parent-dashboard">
+            <article class="lab-panel reveal" id="parent-panel">
+              <span class="live-pill">Valideyn paneli · demo</span>
+              <h3>İnkişaf bir baxışda</h3>
+              <div class="dashboard-summary"><div class="dashboard-stat"><strong id="parent-sessions">12</strong><span>iştirak günü</span></div><div class="dashboard-stat"><strong id="parent-projects">3</strong><span>tamamlanan layihə</span></div><div class="dashboard-stat"><strong id="parent-growth">+18%</strong><span>bu ay inkişaf</span></div></div>
+              <div class="progress-list"><div class="progress-row"><span>Robototexnika</span><div class="progress-track"><div class="progress-fill progress-tech" id="parent-tech"></div></div><b>72%</b></div><div class="progress-row"><span>Yaradıcılıq</span><div class="progress-track"><div class="progress-fill progress-creative" id="parent-creative"></div></div><b>64%</b></div><div class="progress-row"><span>Komanda işi</span><div class="progress-track"><div class="progress-fill progress-team" id="parent-team"></div></div><b>81%</b></div></div>
+            </article>
+            <aside class="project-update reveal"><span class="live-pill">Son fəaliyyət</span><h4>“İşıqlı şəhər” maketi</h4><p>Komanda günəş enerjisi ilə işləyən işıq sisteminin ilk prototipini təqdim etdi. Növbəti mərhələ: hərəkət sensoru əlavə etmək.</p></aside>
+          </div>
+
+          <div class="lab-grid">
+            <article class="lab-panel reveal" id="events-calendar">
+              <div class="calendar-top"><div><span class="live-pill">Tədbir təqvimi</span><h3 id="calendar-month">Sentyabr 2026</h3></div><div class="month-switch"><button id="calendar-prev" type="button" aria-label="Əvvəlki ay">←</button><button id="calendar-next" type="button" aria-label="Növbəti ay">→</button></div></div>
+              <div class="calendar-list" id="calendar-list"></div><p class="calendar-detail" id="calendar-detail" aria-live="polite">Tədbir seçərək qısa proqramı gör.</p>
+            </article>
+
+            <article class="lab-panel chat-panel reveal" id="chatbot">
+              <div><span class="live-pill">Coolab AI bələdçisi · demo</span><h3>Sənə hansı proqram uyğundur?</h3><p>Yaşını, marağını və ya seçmək istədiyin istiqaməti yaz. Bələdçi sənə başlanğıc nöqtəsi təklif edəcək.</p><div class="quick-prompts"><button class="quick-prompt" type="button">13 yaş, robotları sevirəm</button><button class="quick-prompt" type="button">Dizayna necə başlayım?</button><button class="quick-prompt" type="button">Düşərgədə nə edəcəyəm?</button></div></div>
+              <div class="chat-window"><div class="chat-messages" id="chat-messages" aria-live="polite"><div class="chat-message">Salam! Mən Coolab bələdçisiyəm. Səni ən çox nə maraqlandırır?</div></div><form class="chat-form" id="chat-form"><label><span class="sr-only">Mesajın</span><input id="chat-input" maxlength="180" placeholder="Məsələn: Mən oyun yaratmaq istəyirəm" /></label><button class="chat-send" type="submit">Göndər</button></form></div>
+            </article>
           </div>
         </div>
       </section>
