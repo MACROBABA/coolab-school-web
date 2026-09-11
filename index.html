@@ -50,6 +50,7 @@
         z-index: 10;
         background: rgba(255,255,255,0.94);
         border-bottom: 1px solid rgba(220,231,239,0.85);
+        -webkit-backdrop-filter: blur(12px);
         backdrop-filter: blur(12px);
       }
       .nav { min-height: 78px; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
@@ -91,6 +92,8 @@
       .trust-row { display: flex; gap: 18px; margin-top: 34px; color: #4c6078; font-size: 0.87rem; font-weight: 700; }
       .trust-row span { display: flex; align-items: center; gap: 7px; }
       .trust-row i { display: block; width: 9px; height: 9px; border-radius: 3px; background: var(--cyan); }
+      .trust-row .trust-yellow { background: var(--yellow); }
+      .trust-row .trust-orange { background: var(--orange); }
       .hero-visual { position: relative; min-height: 440px; }
       .hero-photo { position: absolute; inset: 18px 0 0 26px; overflow: hidden; border-radius: 30px; box-shadow: var(--shadow); background: #dceff6; }
       .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
@@ -213,8 +216,8 @@
             </div>
             <div class="trust-row" aria-label="Coolab istiqamətləri">
               <span><i></i> Texnologiya</span>
-              <span><i style="background: var(--yellow)"></i> Yaradıcılıq</span>
-              <span><i style="background: var(--orange)"></i> Sosial inkişaf</span>
+              <span><i class="trust-yellow"></i> Yaradıcılıq</span>
+              <span><i class="trust-orange"></i> Sosial inkişaf</span>
             </div>
           </div>
           <div class="hero-visual" aria-label="Uşaqların birlikdə robot layihəsi üzərində işləməsi">
@@ -312,7 +315,7 @@
             <span class="eyebrow">Coolab-a xoş gəlmisiniz</span>
             <h2>Uşağınızın növbəti böyük ideyası burada başlaya bilər.</h2>
             <p>Proqramlar, düşərgələr və yeni qəbul dövrləri barədə məlumat almaq üçün bizimlə əlaqə saxlayın.</p>
-            <a class="button button-warm" href="https://www.instagram.com/coolabschool/" target="_blank" rel="noreferrer">Instagram-da izləyin <span aria-hidden="true">↗</span></a>
+            <a class="button button-warm" href="https://www.instagram.com/coolabschool/" target="_blank" rel="noopener noreferrer">Instagram-da izləyin <span aria-hidden="true">↗</span></a>
           </div>
         </div>
       </section>
