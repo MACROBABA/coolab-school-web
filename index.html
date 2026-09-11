@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="az">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Coolab School — 8–17 yaşlı uşaqlar üçün texnologiya, yaradıcılıq və sosial inkişaf mərkəzi." />
+    <title>Coolab School — Gələcək bacarıqları burada başlayır</title>
+    <style>
+      :root {
+        --navy: #073b70;
+        --blue: #087ec4;
+        --cyan: #10b9d0;
+        --yellow: #f7bf27;
+        --orange: #ef8b39;
+        --ink: #11233b;
+        --muted: #53667c;
+        --line: #dce7ef;
+        --pale: #f4f9fc;
+        --white: #ffffff;
+        --shadow: 0 22px 58px rgba(7, 59, 112, 0.13);
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--white);
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+      a { color: inherit; text-decoration: none; }
+      .container { width: min(1160px, calc(100% - 40px)); margin: 0 auto; }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        color: var(--navy);
+        background: #e8f6fb;
+        font-size: 0.82rem;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+      }
+      .eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); box-shadow: 12px 0 0 var(--cyan); }
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(255,255,255,0.94);
+        border-bottom: 1px solid rgba(220,231,239,0.85);
+        backdrop-filter: blur(12px);
+      }
+      .nav { min-height: 78px; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+      .brand { display: inline-flex; align-items: center; gap: 8px; color: var(--navy); font-weight: 900; font-size: 1.55rem; letter-spacing: -0.06em; }
+      .brand-mark { position: relative; width: 30px; height: 30px; display: inline-grid; place-items: center; }
+      .brand-mark::before, .brand-mark::after { content: ""; position: absolute; border-radius: 50%; }
+      .brand-mark::before { width: 23px; height: 23px; border: 5px solid var(--blue); left: 0; }
+      .brand-mark::after { width: 12px; height: 12px; background: var(--yellow); right: 0; top: 2px; box-shadow: 0 16px 0 var(--orange); }
+      .brand small { color: var(--orange); font-size: 0.52em; letter-spacing: 0.21em; align-self: flex-end; margin-bottom: 4px; }
+      .nav-links { display: flex; align-items: center; gap: 26px; color: #334d6b; font-size: 0.94rem; font-weight: 700; }
+      .nav-links a:hover { color: var(--blue); }
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 48px;
+        padding: 0 20px;
+        border: 1px solid transparent;
+        border-radius: 14px;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+        transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+      }
+      .button:hover { transform: translateY(-2px); }
+      .button-primary { color: white; background: var(--navy); box-shadow: 0 12px 20px rgba(7,59,112,0.2); }
+      .button-primary:hover { background: #052f5a; }
+      .button-light { color: var(--navy); background: white; border-color: #d6e3ed; }
+      .button-warm { color: var(--navy); background: var(--yellow); box-shadow: 0 12px 20px rgba(247,191,39,0.27); }
+      .hero { overflow: hidden; position: relative; padding: 76px 0 82px; background: linear-gradient(116deg, #f5fbfd 0%, #ffffff 58%, #edf8fd 100%); }
+      .hero::after { content: ""; position: absolute; width: 520px; height: 520px; right: -310px; top: -250px; border: 70px solid rgba(16,185,208,0.12); border-radius: 50%; }
+      .hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 0.9fr 1.1fr; align-items: center; gap: 54px; }
+      h1, h2, h3, p { margin-top: 0; }
+      h1 { max-width: 620px; margin: 18px 0 22px; font-size: clamp(2.6rem, 5vw, 4.65rem); letter-spacing: -0.07em; line-height: 0.98; }
+      h1 em { color: var(--blue); font-style: normal; }
+      .hero-copy > p { max-width: 535px; color: var(--muted); font-size: 1.08rem; line-height: 1.7; }
+      .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+      .trust-row { display: flex; gap: 18px; margin-top: 34px; color: #4c6078; font-size: 0.87rem; font-weight: 700; }
+      .trust-row span { display: flex; align-items: center; gap: 7px; }
+      .trust-row i { display: block; width: 9px; height: 9px; border-radius: 3px; background: var(--cyan); }
+      .hero-visual { position: relative; min-height: 440px; }
+      .hero-photo { position: absolute; inset: 18px 0 0 26px; overflow: hidden; border-radius: 30px; box-shadow: var(--shadow); background: #dceff6; }
+      .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+      .hero-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 57%, rgba(4,40,76,0.3)); }
+      .visual-note { position: absolute; z-index: 1; display: grid; gap: 2px; padding: 12px 15px; border-radius: 15px; background: rgba(255,255,255,0.96); box-shadow: 0 15px 35px rgba(6,45,83,0.15); font-size: 0.75rem; color: var(--muted); }
+      .visual-note strong { color: var(--navy); font-size: 0.92rem; }
+      .note-robot { left: 0; bottom: 32px; }
+      .note-robot::before { content: "⚙"; position: absolute; top: -17px; right: -14px; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; color: white; background: var(--blue); font-size: 1rem; }
+      .note-creative { top: 0; right: 5px; color: white; background: var(--orange); }
+      .note-creative strong { color: white; }
+      .section { padding: 94px 0; }
+      .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 28px; margin-bottom: 38px; }
+      .section-heading h2 { max-width: 610px; margin: 14px 0 0; font-size: clamp(2rem, 3.5vw, 3.15rem); line-height: 1.08; letter-spacing: -0.055em; }
+      .section-heading p { max-width: 350px; margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.65; }
+      .program-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+      .program-card { min-height: 265px; padding: 24px; border: 1px solid var(--line); border-radius: 20px; background: white; transition: transform 180ms ease, box-shadow 180ms ease; }
+      .program-card:hover { transform: translateY(-5px); box-shadow: 0 20px 36px rgba(7,59,112,0.1); }
+      .program-icon { width: 52px; height: 52px; display: grid; place-items: center; margin-bottom: 45px; border-radius: 15px; color: white; font-size: 1.45rem; }
+      .program-card:nth-child(1) .program-icon { background: var(--navy); }
+      .program-card:nth-child(2) .program-icon { background: var(--blue); }
+      .program-card:nth-child(3) .program-icon { background: var(--cyan); }
+      .program-card:nth-child(4) .program-icon { background: var(--orange); }
+      .program-card h3 { margin-bottom: 10px; font-size: 1.28rem; letter-spacing: -0.03em; }
+      .program-card p { margin-bottom: 0; color: var(--muted); font-size: 0.94rem; line-height: 1.6; }
+      .experience { background: var(--navy); color: white; }
+      .experience .section-heading h2 { max-width: 580px; }
+      .experience .section-heading p { color: #bed9ed; }
+      .experience .eyebrow { background: rgba(255,255,255,0.12); color: white; }
+      .experience-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 52px; align-items: center; }
+      .journey { position: relative; display: grid; gap: 12px; }
+      .journey::before { content: ""; position: absolute; left: 25px; top: 46px; bottom: 46px; border-left: 2px dashed rgba(255,255,255,0.28); }
+      .journey-step { position: relative; display: grid; grid-template-columns: 52px 1fr; gap: 16px; align-items: center; padding: 14px 0; }
+      .journey-number { width: 52px; height: 52px; display: grid; place-items: center; border: 2px solid rgba(255,255,255,0.32); border-radius: 50%; background: var(--navy); color: var(--yellow); font-weight: 900; }
+      .journey-step h3 { margin: 0 0 2px; font-size: 1.08rem; }
+      .journey-step p { margin: 0; color: #c6ddeb; font-size: 0.92rem; }
+      .outcome-card { padding: 28px; border-radius: 24px; background: linear-gradient(145deg, #0e91c9, #0761a8); box-shadow: 0 22px 44px rgba(0,0,0,0.18); }
+      .outcome-card .mini-label { color: #d6f4ff; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: .09em; }
+      .outcome-card h3 { margin: 14px 0 22px; font-size: 1.8rem; line-height: 1.13; letter-spacing: -0.04em; }
+      .skill-list { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; }
+      .skill-list li { padding: 11px 13px; border-radius: 11px; background: rgba(255,255,255,0.13); font-size: 0.91rem; }
+      .skill-list li::before { content: "✓"; margin-right: 10px; color: var(--yellow); font-weight: 900; }
+      .parent-section { background: var(--pale); }
+      .parent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+      .parent-card { padding: 30px; border-radius: 20px; background: white; border: 1px solid var(--line); }
+      .parent-card h3 { margin-bottom: 10px; font-size: 1.18rem; }
+      .parent-card p { margin-bottom: 0; color: var(--muted); line-height: 1.65; }
+      .parent-card:nth-child(1) { border-top: 5px solid var(--yellow); }
+      .parent-card:nth-child(2) { border-top: 5px solid var(--cyan); }
+      .parent-card:nth-child(3) { border-top: 5px solid var(--orange); }
+      .parent-card:nth-child(4) { border-top: 5px solid var(--blue); }
+      .cta { padding: 78px 0; }
+      .cta-panel { position: relative; overflow: hidden; padding: 56px min(7vw, 80px); border-radius: 28px; color: white; background: linear-gradient(100deg, var(--navy), #075a9f); }
+      .cta-panel::before { content: ""; position: absolute; width: 240px; height: 240px; border: 42px solid rgba(16,185,208,0.32); border-radius: 50%; right: -78px; top: -126px; }
+      .cta-panel::after { content: ""; position: absolute; width: 138px; height: 138px; border-radius: 50%; background: var(--yellow); right: 80px; bottom: -85px; }
+      .cta-panel > * { position: relative; z-index: 1; }
+      .cta-panel h2 { max-width: 690px; margin: 14px 0 16px; font-size: clamp(2rem,4vw,3.35rem); line-height: 1.05; letter-spacing: -0.06em; }
+      .cta-panel p { max-width: 510px; margin-bottom: 27px; color: #d2e7f4; font-size: 1.05rem; }
+      footer { padding: 42px 0; color: #66809b; border-top: 1px solid var(--line); }
+      .footer-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+      .footer-row p { margin: 0; font-size: .9rem; }
+      .footer-nav { display: flex; gap: 18px; font-size: .88rem; font-weight: 700; }
+      @media (max-width: 880px) {
+        .nav-links { display: none; }
+        .hero { padding-top: 56px; }
+        .hero-grid, .experience-grid { grid-template-columns: 1fr; }
+        .hero-copy { text-align: center; }
+        .hero-copy > p, h1 { margin-left: auto; margin-right: auto; }
+        .hero-actions, .trust-row { justify-content: center; }
+        .hero-visual { min-height: 410px; max-width: 640px; width: 100%; margin: 0 auto; }
+        .section-heading { display: block; }
+        .section-heading p { margin-top: 18px; }
+        .program-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+      @media (max-width: 560px) {
+        .container { width: min(100% - 28px, 1160px); }
+        .nav { min-height: 66px; }
+        .nav .button { min-height: 40px; padding: 0 13px; font-size: .86rem; }
+        .brand { font-size: 1.34rem; }
+        .hero { padding: 44px 0 56px; }
+        h1 { font-size: clamp(2.45rem, 12vw, 3.45rem); }
+        .trust-row { flex-wrap: wrap; }
+        .hero-visual { min-height: 330px; }
+        .hero-photo { left: 8px; inset: 18px 0 0 8px; border-radius: 22px; }
+        .note-creative { right: -2px; }
+        .program-grid, .parent-grid { grid-template-columns: 1fr; }
+        .section { padding: 70px 0; }
+        .section-heading h2 { font-size: 2.15rem; }
+        .cta-panel { padding: 42px 28px; }
+        .cta-panel::after { right: 12px; }
+        .footer-row { align-items: flex-start; flex-direction: column; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand" href="#ana-sehife" aria-label="Coolab School ana səhifə">
+          <span class="brand-mark" aria-hidden="true"></span><span>coolab</span><small>SCHOOL</small>
+        </a>
+        <nav class="nav-links" aria-label="Əsas naviqasiya">
+          <a href="#haqqimizda">Coolab nədir?</a>
+          <a href="#proqramlar">Proqramlar</a>
+          <a href="#dusergeler">Düşərgələr</a>
+          <a href="#valideynler">Valideynlər üçün</a>
+        </nav>
+        <a class="button button-primary" href="#elaqe">Məlumat al <span aria-hidden="true">→</span></a>
+      </div>
+    </header>
+
+    <main id="ana-sehife">
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow">8–17 yaş üçün gələcək bacarıqları</span>
+            <h1>Öyrən. Yarat. <em>Birlikdə böyü.</em></h1>
+            <p>Coolab School uşaqlara texnologiya, yaradıcılıq və sosial bacarıqları real layihələr və unudulmaz təcrübələrlə qazandırır.</p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#proqramlar">Proqramları kəşf et <span aria-hidden="true">→</span></a>
+              <a class="button button-light" href="#haqqimizda">Coolab-ı tanı</a>
+            </div>
+            <div class="trust-row" aria-label="Coolab istiqamətləri">
+              <span><i></i> Texnologiya</span>
+              <span><i style="background: var(--yellow)"></i> Yaradıcılıq</span>
+              <span><i style="background: var(--orange)"></i> Sosial inkişaf</span>
+            </div>
+          </div>
+          <div class="hero-visual" aria-label="Uşaqların birlikdə robot layihəsi üzərində işləməsi">
+            <div class="hero-photo"><img src="assets/coolab-hero.png" alt="Coolab mühitində uşaqlar robot layihəsi üzərində birlikdə işləyirlər" /></div>
+            <div class="visual-note note-creative"><strong>İdeya + hərəkət</strong><span>Hər gün yeni təcrübə</span></div>
+            <div class="visual-note note-robot"><strong>Layihə əsaslı öyrənmə</strong><span>İdeyadan real nəticəyə</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="haqqimizda">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Coolab nədir?</span>
+              <h2>Uşağın gələcəyini yalnız dərs yox, təcrübə formalaşdırır.</h2>
+            </div>
+            <p>Burada uşaqlar maraqlarını kəşf edir, yeni insanlarla tanış olur və biliklərini işlək bacarıqlara çevirirlər.</p>
+          </div>
+          <div class="program-grid" id="proqramlar">
+            <article class="program-card">
+              <div class="program-icon" aria-hidden="true">⚙</div>
+              <h3>Robototexnika</h3>
+              <p>Qur, sına, düzəlt. Texnologiyanı sadəcə izləmə, onu özün yarat.</p>
+            </article>
+            <article class="program-card">
+              <div class="program-icon" aria-hidden="true">✦</div>
+              <h3>Qrafik dizayn</h3>
+              <p>Fikirlərini rəng, forma və vizual hekayələrlə ifadə etməyi öyrən.</p>
+            </article>
+            <article class="program-card">
+              <div class="program-icon" aria-hidden="true">◎</div>
+              <h3>Sosial bacarıqlar</h3>
+              <p>Ünsiyyət, əməkdaşlıq və liderlik bacarığını canlı mühitdə inkişaf etdir.</p>
+            </article>
+            <article class="program-card">
+              <div class="program-icon" aria-hidden="true">⌂</div>
+              <h3>4 fəsil düşərgə</h3>
+              <p>Yeni dostluqlar, oyunlar, kəşflər və ilboyu davam edən təcrübələr.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section experience" id="dusergeler">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Düşərgədən daha artığı</span>
+              <h2>Hər fəaliyyət uşağın özünü kəşf etməsi üçün bir fürsətdir.</h2>
+            </div>
+            <p>Coolab-da öyrənmə, hərəkət və yaradıcılıq bir-birindən ayrılmır.</p>
+          </div>
+          <div class="experience-grid">
+            <div class="journey">
+              <div class="journey-step"><span class="journey-number">01</span><div><h3>Kəşf et</h3><p>Maraqlandığın sahəni sına və sənə uyğun istiqaməti tap.</p></div></div>
+              <div class="journey-step"><span class="journey-number">02</span><div><h3>Yarat</h3><p>Komandanla ideyanı layihəyə, layihəni nəticəyə çevir.</p></div></div>
+              <div class="journey-step"><span class="journey-number">03</span><div><h3>Paylaş</h3><p>Fikrini ifadə et, işini təqdim et və uğurunu birlikdə qeyd et.</p></div></div>
+            </div>
+            <aside class="outcome-card">
+              <span class="mini-label">Coolab təcrübəsi</span>
+              <h3>Əyləncənin içində real inkişaf.</h3>
+              <ul class="skill-list">
+                <li>Komanda ilə işləmək</li>
+                <li>Problemə yaradıcı yanaşmaq</li>
+                <li>Məsuliyyət və liderlik</li>
+                <li>Öz fikrini inamla təqdim etmək</li>
+              </ul>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="section parent-section" id="valideynler">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Valideynlər üçün</span>
+              <h2>Uşağınızın inkişafını daha yaxından hiss edin.</h2>
+            </div>
+            <p>Bizim üçün hər uşağın potensialı, rahatlığı və inkişaf yolu eyni dərəcədə önəmlidir.</p>
+          </div>
+          <div class="parent-grid">
+            <article class="parent-card"><h3>Maraqdan başlayırıq</h3><p>Uşağın sevdiyi mövzulara diqqət verərək onu uyğun fəaliyyətlərlə tanış edirik.</p></article>
+            <article class="parent-card"><h3>Praktik təcrübə yaradırıq</h3><p>İştirakçılar yalnız dinləmir; qurur, sınaqdan keçirir, birlikdə nəticə əldə edirlər.</p></article>
+            <article class="parent-card"><h3>Sosial mühit qururuq</h3><p>Yeni dostluqlar və komanda işi uşağın özünəinamını təbii şəkildə gücləndirir.</p></article>
+            <article class="parent-card"><h3>İrəliləyişi görünən edirik</h3><p>Layihələr, təqdimatlar və fəaliyyətlər uşağın qazandığı bacarıqları göstərir.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta" id="elaqe">
+        <div class="container">
+          <div class="cta-panel">
+            <span class="eyebrow">Coolab-a xoş gəlmisiniz</span>
+            <h2>Uşağınızın növbəti böyük ideyası burada başlaya bilər.</h2>
+            <p>Proqramlar, düşərgələr və yeni qəbul dövrləri barədə məlumat almaq üçün bizimlə əlaqə saxlayın.</p>
+            <a class="button button-warm" href="https://www.instagram.com/coolabschool/" target="_blank" rel="noreferrer">Instagram-da izləyin <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container footer-row">
+        <a class="brand" href="#ana-sehife"><span class="brand-mark" aria-hidden="true"></span><span>coolab</span><small>SCHOOL</small></a>
+        <p>Gələcək bacarıqları, real təcrübələr və yeni dostluqlar.</p>
+        <nav class="footer-nav" aria-label="Alt naviqasiya"><a href="#proqramlar">Proqramlar</a><a href="#dusergeler">Düşərgələr</a><a href="#elaqe">Əlaqə</a></nav>
+      </div>
+    </footer>
+  </body>
+</html>
