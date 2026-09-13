@@ -1,0 +1,24 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Coolab API: başlat",
+      "type": "shell",
+      "command": "pnpm dev",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/api"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Coolab API: yoxla",
+      "type": "shell",
+      "command": "pnpm check",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/api"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

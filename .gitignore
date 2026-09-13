@@ -2,3 +2,6 @@ node_modules/
 .pnpm-store/
 .site-package/
 coolab-school-site.tar.gz
+.env
+.env.*
+!.env.example
