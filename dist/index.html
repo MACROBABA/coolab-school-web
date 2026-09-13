@@ -50,8 +50,8 @@
         position: sticky;
         top: 0;
         z-index: 10;
-        background: rgba(255,255,255,0.94);
-        border-bottom: 1px solid rgba(220,231,239,0.85);
+        background: #162d42;
+        border-bottom: 1px solid rgba(190,232,248,0.16);
         -webkit-backdrop-filter: blur(12px);
         backdrop-filter: blur(12px);
       }
@@ -65,8 +65,8 @@
       .brand-mark::before { width: 23px; height: 23px; border: 5px solid var(--blue); left: 0; }
       .brand-mark::after { width: 12px; height: 12px; background: var(--yellow); right: 0; top: 2px; box-shadow: 0 16px 0 var(--orange); }
       .brand small { color: var(--orange); font-size: 0.52em; letter-spacing: 0.21em; align-self: flex-end; margin-bottom: 4px; }
-      .nav-links { display: flex; align-items: center; gap: 26px; color: #334d6b; font-size: 0.94rem; font-weight: 700; }
-      .nav-links a:hover { color: var(--blue); }
+      .nav-links { display: flex; align-items: center; gap: 26px; color: #e8f6fb; font-size: 0.94rem; font-weight: 700; }
+      .nav-links a:hover { color: var(--cyan); }
       .button {
         display: inline-flex;
         align-items: center;
@@ -85,6 +85,8 @@
       .button:focus-visible, .program-card:focus-visible, .orbit-control:focus-visible { outline: 3px solid var(--yellow); outline-offset: 3px; }
       .button-primary { color: white; background: var(--navy); box-shadow: 0 12px 20px rgba(7,59,112,0.2); }
       .button-primary:hover { background: #052f5a; }
+      .site-header .button-primary { color: var(--navy); background: var(--yellow); box-shadow: 0 12px 20px rgba(247,191,39,.18); }
+      .site-header .button-primary:hover { background: #ffd14a; }
       .button-light { color: var(--navy); background: white; border-color: #d6e3ed; }
       .button-warm { color: var(--navy); background: var(--yellow); box-shadow: 0 12px 20px rgba(247,191,39,0.27); }
       .hero { overflow: hidden; position: relative; padding: 76px 0 82px; background: radial-gradient(circle at 85% 22%, rgba(16,185,208,0.19), transparent 25%), linear-gradient(116deg, #f5fbfd 0%, #ffffff 58%, #edf8fd 100%); }
@@ -274,10 +276,11 @@
       .cta-panel > * { position: relative; z-index: 1; }
       .cta-panel h2 { max-width: 690px; margin: 14px 0 16px; font-size: clamp(2rem,4vw,3.35rem); line-height: 1.05; letter-spacing: -0.06em; }
       .cta-panel p { max-width: 510px; margin-bottom: 27px; color: #d2e7f4; font-size: 1.05rem; }
-      footer { padding: 42px 0; color: #66809b; border-top: 1px solid var(--line); }
+      footer { padding: 42px 0; color: #c4deed; background: #162d42; border-top: 1px solid rgba(190,232,248,.15); }
       .footer-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
       .footer-row p { margin: 0; font-size: .9rem; }
-      .footer-nav { display: flex; gap: 18px; font-size: .88rem; font-weight: 700; }
+      .footer-nav { display: flex; gap: 18px; color: white; font-size: .88rem; font-weight: 700; }
+      .footer-nav a:hover { color: var(--cyan); }
       .reveal { opacity: 0; transform: translateY(26px); transition: opacity 650ms ease, transform 650ms cubic-bezier(.2,.8,.2,1); }
       .reveal.visible { opacity: 1; transform: translateY(0); }
       .program-card.reveal { transform: translateY(34px); }
