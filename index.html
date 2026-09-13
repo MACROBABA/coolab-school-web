@@ -123,7 +123,7 @@
       .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 28px; margin-bottom: 38px; }
       .section-heading h2 { max-width: 610px; margin: 14px 0 0; font-size: clamp(2rem, 3.5vw, 3.15rem); line-height: 1.08; letter-spacing: -0.055em; }
       .section-heading p { max-width: 350px; margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.65; }
-      .program-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+      .program-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
       .program-card { position: relative; isolation: isolate; min-height: 265px; width: 100%; padding: 24px; overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: white; color: inherit; text-align: left; font: inherit; cursor: pointer; transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease; }
       .program-card::after { content: ""; position: absolute; z-index: -1; inset: 0; opacity: 0; background: radial-gradient(250px circle at var(--pointer-x, 50%) var(--pointer-y, 50%), rgba(16,185,208,.18), transparent 42%); transition: opacity 180ms ease; }
       .program-card:hover, .program-card.is-selected { transform: translateY(-7px) rotateX(2deg) rotateY(-2deg); border-color: rgba(8,126,196,.38); box-shadow: 0 23px 42px rgba(7,59,112,0.15); }
@@ -134,9 +134,56 @@
       .program-card:nth-child(2) .program-icon { background: var(--blue); }
       .program-card:nth-child(3) .program-icon { background: var(--cyan); }
       .program-card:nth-child(4) .program-icon { background: var(--orange); }
+      .program-card:nth-child(5) .program-icon { color: var(--navy); background: var(--yellow); }
+      .program-card:nth-child(6) .program-icon { background: #0a5f9e; }
       .program-card h3 { margin-bottom: 10px; font-size: 1.28rem; letter-spacing: -0.03em; }
       .program-card p { margin-bottom: 0; color: var(--muted); font-size: 0.94rem; line-height: 1.6; }
       .program-message { min-height: 26px; margin: 20px 0 0; color: var(--blue); font-size: .92rem; font-weight: 800; }
+      .section-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; color: var(--blue); font-size: .92rem; font-weight: 900; }
+      .section-link:hover { color: var(--navy); }
+      .activity-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+      .activity-card { position: relative; min-height: 224px; padding: 23px; overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: white; box-shadow: 0 13px 30px rgba(7,59,112,.07); }
+      .activity-card::before { content: attr(data-number); display: block; margin-bottom: 38px; color: var(--cyan); font-size: .78rem; font-weight: 950; letter-spacing: .12em; }
+      .activity-card h3 { margin-bottom: 9px; font-size: 1.18rem; letter-spacing: -.035em; }
+      .activity-card p { margin: 0; color: var(--muted); font-size: .92rem; line-height: 1.6; }
+      .activity-card:nth-child(2)::before { color: var(--yellow); }
+      .activity-card:nth-child(3)::before { color: var(--orange); }
+      .activity-card:nth-child(4)::before { color: var(--blue); }
+      .portfolio { overflow: hidden; padding: 94px 0; background: linear-gradient(130deg, #f1f9fc 0%, #fff 55%, #edf8fd 100%); }
+      .portfolio-shell { display: grid; grid-template-columns: .86fr 1.14fr; gap: 32px; align-items: start; }
+      .portfolio-copy h2 { max-width: 520px; margin: 14px 0 18px; font-size: clamp(2.1rem, 3.8vw, 3.4rem); line-height: 1.05; letter-spacing: -.06em; }
+      .portfolio-copy > p { max-width: 500px; color: var(--muted); line-height: 1.7; }
+      .profile-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+      .profile-tab { padding: 10px 13px; border: 1px solid #c9e2ed; border-radius: 999px; color: var(--navy); background: white; font: inherit; font-size: .84rem; font-weight: 850; cursor: pointer; }
+      .profile-tab:hover, .profile-tab.is-active { color: white; border-color: var(--navy); background: var(--navy); }
+      .portfolio-card { padding: 28px; border-radius: 25px; color: white; background: #162d42; box-shadow: var(--shadow); }
+      .portfolio-note { margin: 17px 0 0; color: #476577; font-size: .9rem; font-weight: 750; line-height: 1.6; }
+      .portfolio-note strong { color: var(--navy); }
+      .portfolio-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+      .portfolio-card h3 { margin: 6px 0 0; font-size: 1.65rem; letter-spacing: -.05em; }
+      .portfolio-label { color: #a9dded; font-size: .77rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+      .portfolio-years { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 26px 0 20px; }
+      .portfolio-year { position: relative; padding: 14px 12px 0; border-top: 2px solid rgba(255,255,255,.2); color: #c2deeb; font-size: .78rem; font-weight: 750; }
+      .portfolio-year::before { content: ""; position: absolute; width: 10px; height: 10px; left: 0; top: -6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 5px rgba(16,185,208,.16); }
+      .portfolio-year strong { display: block; margin-bottom: 4px; color: white; font-size: 1rem; }
+      .portfolio-summary { padding: 15px; border-radius: 15px; background: rgba(255,255,255,.1); color: #d5eaf4; font-size: .92rem; line-height: 1.6; }
+      .portfolio-skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-top: 15px; }
+      .portfolio-skill { padding: 10px; border-radius: 12px; background: rgba(255,255,255,.08); color: #d2e8f3; font-size: .75rem; font-weight: 800; }
+      .portfolio-skill b { display: block; margin-top: 4px; color: var(--yellow); font-size: 1.05rem; }
+      .testimonials { padding: 94px 0; background: var(--pale); }
+      .testimonial-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      .testimonial { display: flex; flex-direction: column; min-height: 240px; padding: 23px; border-radius: 20px; background: white; border: 1px solid var(--line); }
+      .testimonial::before { content: "“"; height: 40px; color: var(--orange); font-family: Georgia, serif; font-size: 3.4rem; line-height: .9; }
+      .testimonial h3 { margin: 7px 0 10px; color: var(--navy); font-size: 1rem; }
+      .testimonial p { margin: 0; color: var(--muted); font-size: .91rem; line-height: 1.65; }
+      .contact-section { padding: 78px 0; background: white; }
+      .contact-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; padding: 38px; border-radius: 28px; color: white; background: #162d42; }
+      .contact-panel h2 { margin: 14px 0 10px; font-size: clamp(2rem, 3.5vw, 3.1rem); line-height: 1.06; letter-spacing: -.06em; }
+      .contact-panel p { max-width: 480px; margin: 0; color: #c7dfeb; line-height: 1.65; }
+      .contact-list { display: grid; gap: 11px; align-content: center; }
+      .contact-item { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 13px 15px; border: 1px solid rgba(190,232,248,.18); border-radius: 13px; color: white; background: rgba(255,255,255,.07); font-size: .9rem; font-weight: 800; }
+      .contact-item span { color: #a9dded; font-size: .78rem; }
+      .contact-item:hover { border-color: var(--cyan); background: rgba(16,185,208,.13); }
       .lab { position: relative; overflow: hidden; padding: 94px 0; color: white; background: #061d38; }
       .lab::before { content: ""; position: absolute; width: 680px; height: 680px; right: -290px; top: -350px; border: 120px solid rgba(16,185,208,.12); border-radius: 50%; pointer-events: none; }
       .lab .container { position: relative; z-index: 1; }
@@ -308,6 +355,10 @@
         .section-heading { display: block; }
         .section-heading p { margin-top: 18px; }
         .program-grid { grid-template-columns: repeat(2, 1fr); }
+        .activity-grid { grid-template-columns: repeat(2, 1fr); }
+        .portfolio-shell { grid-template-columns: 1fr; }
+        .testimonial-grid { grid-template-columns: repeat(2, 1fr); }
+        .contact-panel { grid-template-columns: 1fr; }
         .lab-header { display: block; }
         .lab-header p { margin-top: 18px; }
         .robot-stage { position: relative; inset: auto; margin: 22px -27px -27px; min-height: 300px; }
@@ -329,7 +380,7 @@
         .hero-photo { left: 8px; inset: 18px 0 0 8px; border-radius: 22px; }
         .three-stage { border-radius: 22px; }
         .note-creative { right: -2px; }
-        .program-grid, .parent-grid { grid-template-columns: 1fr; }
+        .program-grid, .parent-grid, .activity-grid, .testimonial-grid { grid-template-columns: 1fr; }
         .lab { padding: 70px 0; }
         .lab-grid, .map-layout, .skill-layout, .chat-panel { grid-template-columns: 1fr; }
         .lab-panel { padding: 22px; border-radius: 20px; }
@@ -340,6 +391,9 @@
         .idea-form label:first-child, .generate-button { grid-column: auto; }
         .dashboard-summary { grid-template-columns: 1fr; }
         .ar-stage { height: 220px; }
+        .portfolio { padding: 70px 0; }
+        .portfolio-card, .contact-panel { padding: 24px; }
+        .portfolio-years, .portfolio-skills { grid-template-columns: 1fr; }
         .section { padding: 70px 0; }
         .section-heading h2 { font-size: 2.15rem; }
         .cta-panel { padding: 42px 28px; }
@@ -353,11 +407,11 @@
       <div class="container nav">
         <a class="brand logo-brand" href="#ana-sehife" aria-label="Coolab School ana səhifə"><img class="brand-logo-image" src="assets/coolab-logo-second.png" alt="Coolab School" /></a>
         <nav class="nav-links" aria-label="Əsas naviqasiya">
-          <a href="#haqqimizda">Coolab nədir?</a>
+          <a href="coolab-nedir.html">Coolab nədir?</a>
+          <a href="fealiyyetler.html">Fəaliyyətlər</a>
           <a href="#coolab-lab">Coolab Lab</a>
-          <a href="#proqramlar">Proqramlar</a>
-          <a href="#dusergeler">Düşərgələr</a>
-          <a href="#valideynler">Valideynlər üçün</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#reyler">Rəylər</a>
         </nav>
         <a class="button button-primary" href="#elaqe">Məlumat al <span aria-hidden="true">→</span></a>
       </div>
@@ -372,7 +426,7 @@
             <p>Coolab School uşaqlara texnologiya, yaradıcılıq və sosial bacarıqları real layihələr və unudulmaz təcrübələrlə qazandırır.</p>
             <div class="hero-actions">
               <a class="button button-primary" href="#proqramlar">Proqramları kəşf et <span aria-hidden="true">→</span></a>
-              <a class="button button-light" href="#haqqimizda">Coolab-ı tanı</a>
+              <a class="button button-light" href="coolab-nedir.html">Coolab-ı tanı</a>
             </div>
             <div class="trust-row" aria-label="Coolab istiqamətləri">
               <span><i></i> Texnologiya</span>
@@ -512,32 +566,44 @@
             <div>
               <span class="eyebrow">Coolab nədir?</span>
               <h2>Uşağın gələcəyini yalnız dərs yox, təcrübə formalaşdırır.</h2>
+              <a class="section-link" href="coolab-nedir.html">Coolab School haqqında ətraflı oxu <span aria-hidden="true">→</span></a>
             </div>
-            <p>Burada uşaqlar maraqlarını kəşf edir, yeni insanlarla tanış olur və biliklərini işlək bacarıqlara çevirirlər.</p>
+            <p>Coolab uşaqlara maraqlarını kəşf etmək, seçdikləri sahədə inkişaf etmək və biliklərini real layihələrdə sınamaq üçün mühit yaradır.</p>
           </div>
           <div class="program-grid" id="proqramlar">
             <button class="program-card reveal" type="button" data-program="Robototexnika" data-color="#10b9d0" aria-pressed="false">
               <div class="program-icon" aria-hidden="true">⚙</div>
               <h3>Robototexnika</h3>
-              <p>Qur, sına, düzəlt. Texnologiyanı sadəcə izləmə, onu özün yarat.</p>
+              <p>7 aylıq proqram: həftədə 2 dəfə, hər dərs 2 saat. Elektronika, mexanika və proqramlaşdırma.</p>
             </button>
             <button class="program-card reveal" type="button" data-program="Qrafik dizayn" data-color="#f7bf27" aria-pressed="false">
               <div class="program-icon" aria-hidden="true">✦</div>
               <h3>Qrafik dizayn</h3>
-              <p>Fikirlərini rəng, forma və vizual hekayələrlə ifadə etməyi öyrən.</p>
+              <p>Həftədə 2 dəfə, hər dərs 2 saat. Rəng, kompozisiya və vizual hekayə ilə işləyin.</p>
             </button>
-            <button class="program-card reveal" type="button" data-program="Sosial bacarıqlar" data-color="#087ec4" aria-pressed="false">
+            <button class="program-card reveal" type="button" data-program="AI təlimi" data-color="#087ec4" aria-pressed="false">
+              <div class="program-icon" aria-hidden="true">✦</div>
+              <h3>AI təlimi</h3>
+              <p>1 ay ərzində AI əsasları, araşdırma, ideya yaratma və müasir alətlərdən yaradıcı istifadə.</p>
+            </button>
+            <button class="program-card reveal" type="button" data-program="Front-end proqramlaşdırma" data-color="#ef8b39" aria-pressed="false">
+              <div class="program-icon" aria-hidden="true">&lt;/&gt;</div>
+              <h3>Front-end proqramlaşdırma</h3>
+              <p>HTML, CSS və veb məhsul yaratma məntiqini real layihələrlə öyrənin.</p>
+            </button>
+            <button class="program-card reveal" type="button" data-program="Sosiallaşma bacarıqları" data-color="#f7bf27" aria-pressed="false">
               <div class="program-icon" aria-hidden="true">◎</div>
-              <h3>Sosial bacarıqlar</h3>
-              <p>Ünsiyyət, əməkdaşlıq və liderlik bacarığını canlı mühitdə inkişaf etdir.</p>
+              <h3>Sosiallaşma bacarıqları</h3>
+              <p>Hər şənbə 11:00–17:00: mentor saatı, oyunlar, müzakirələr və komanda fəaliyyəti.</p>
             </button>
-            <button class="program-card reveal" type="button" data-program="4 fəsil düşərgə" data-color="#ef8b39" aria-pressed="false">
+            <button class="program-card reveal" type="button" data-program="4 fəsil düşərgə" data-color="#10b9d0" aria-pressed="false">
               <div class="program-icon" aria-hidden="true">⌂</div>
               <h3>4 fəsil düşərgə</h3>
-              <p>Yeni dostluqlar, oyunlar, kəşflər və ilboyu davam edən təcrübələr.</p>
+              <p>İlboyu təhsil, yaradıcılıq, oyun və sosial təcrübəni birləşdirən düşərgələr.</p>
             </button>
           </div>
           <p class="program-message" id="program-message" aria-live="polite">Bir istiqamət seç, 3D səhnənin enerjisi dəyişsin.</p>
+          <a class="section-link" href="fealiyyetler.html">Bütün fəaliyyətləri və detalları gör <span aria-hidden="true">→</span></a>
         </div>
       </section>
 
@@ -570,6 +636,47 @@
         </div>
       </section>
 
+      <section class="section" id="faliyyetler">
+        <div class="container">
+          <div class="section-heading reveal">
+            <div>
+              <span class="eyebrow">Daha çox təcrübə</span>
+              <h2>Dərsdən kənarda da kəşf etməyə davam edirik.</h2>
+              <a class="section-link" href="fealiyyetler.html">Bütün fəaliyyətlər haqqında oxu <span aria-hidden="true">→</span></a>
+            </div>
+            <p>Düşərgələr, turlar və klublar uşaqların yeni mühitlərdə təcrübə qazanmasına şərait yaradır.</p>
+          </div>
+          <div class="activity-grid">
+            <article class="activity-card reveal" data-number="01"><h3>Bakıdaxili və rayon turları</h3><p>Yeni məkanları kəşf etmək, fərqli mühitlərdə təcrübə qazanmaq və dünyagörüşünü genişləndirmək üçün səfərlər.</p></article>
+            <article class="activity-card reveal" data-number="02"><h3>İnfoturlar</h3><p>Şirkət və müəssisələrə səfərlərlə real iş mühitini və müxtəlif peşələri yaxından tanımaq imkanı.</p></article>
+            <article class="activity-card reveal" data-number="03"><h3>Yay Məktəbi</h3><p>Tətil günlərində təhsil, yaradıcılıq, sosiallaşma və praktik tapşırıqları birləşdirən inkişaf proqramı.</p></article>
+            <article class="activity-card reveal" data-number="04"><h3>Kitab Klubu</h3><p>Ayda 1 və ya 2 kitab, canlı müzakirələr, oyunlar və yaradıcı tapşırıqlarla oxu vərdişini gücləndirən klub.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="portfolio" id="portfolio">
+        <div class="container portfolio-shell">
+          <div class="portfolio-copy reveal">
+            <span class="eyebrow">Şagird portfolio sistemi</span>
+            <h2>İnkişafı yalnız nəticədə yox, yolun özündə görün.</h2>
+            <p>Hər şagirdin qoşulduğu ildən bu günə qədərki layihələri, qazandığı bacarıqlar və dəyişən maraqları bir profil üzərində toplanır.</p>
+            <p class="portfolio-note"><strong>2800+</strong> iştirakçının inkişaf yoluna dəstək vermişik. Son bir ildə isə <strong>1400</strong> iştirakçı Coolab təcrübəsinə qoşulub.</p>
+            <div class="profile-tabs" aria-label="Portfolio nümunələri">
+              <button class="profile-tab is-active" type="button" data-portfolio-profile="explorer">Kəşf edən şagird</button>
+              <button class="profile-tab" type="button" data-portfolio-profile="creator">Yaradan şagird</button>
+              <button class="profile-tab" type="button" data-portfolio-profile="leader">Komanda lideri</button>
+            </div>
+          </div>
+          <article class="portfolio-card reveal" aria-live="polite">
+            <div class="portfolio-card-top"><div><span class="portfolio-label">İnkişaf portfolioları</span><h3 id="portfolio-name">Kəşf edən şagird</h3></div><span class="portfolio-label" id="portfolio-range">2024 → 2026</span></div>
+            <div class="portfolio-years" id="portfolio-years"><div class="portfolio-year"><strong>2024</strong>Maraq və uyğunlaşma</div><div class="portfolio-year"><strong>2025</strong>İlk layihə və komanda işi</div><div class="portfolio-year"><strong>2026</strong>Təqdimat və yeni hədəflər</div></div>
+            <div class="portfolio-summary" id="portfolio-summary">Robototexnika ilə başlayan maraq, layihə qurmaq və fikrini təqdim etmək bacarığına çevrilib.</div>
+            <div class="portfolio-skills" id="portfolio-skills"><div class="portfolio-skill">Texnologiya<b>78%</b></div><div class="portfolio-skill">Komanda işi<b>82%</b></div><div class="portfolio-skill">Özünüifadə<b>74%</b></div></div>
+          </article>
+        </div>
+      </section>
+
       <section class="section parent-section" id="valideynler">
         <div class="container">
           <div class="section-heading reveal">
@@ -588,13 +695,38 @@
         </div>
       </section>
 
-      <section class="cta" id="elaqe">
+      <section class="testimonials" id="reyler">
         <div class="container">
-          <div class="cta-panel reveal">
-            <span class="eyebrow">Coolab-a xoş gəlmisiniz</span>
-            <h2>Uşağınızın növbəti böyük ideyası burada başlaya bilər.</h2>
-            <p>Proqramlar, düşərgələr və yeni qəbul dövrləri barədə məlumat almaq üçün bizimlə əlaqə saxlayın.</p>
-            <a class="button button-warm" href="https://www.instagram.com/coolabschool/" target="_blank" rel="noopener noreferrer">Instagram-da izləyin <span aria-hidden="true">↗</span></a>
+          <div class="section-heading reveal">
+            <div><span class="eyebrow">Valideyn rəyləri</span><h2>Hər dəyişiklik ailənin gündəlik həyatında hiss olunur.</h2></div>
+            <p>Coolab təcrübəsi haqqında valideynlərin paylaşdığı rəylər.</p>
+          </div>
+          <div class="testimonial-grid">
+            <article class="testimonial reveal"><h3>Vahidin anası</h3><p>Vahid əvvəl utancaq idi, danışmağa və uşaqlarla ünsiyyətə girməyə çəkinirdi. İndi daha rahat danışır, birlikdə işləməkdən zövq alır və özünəinamı artıb.</p></article>
+            <article class="testimonial reveal"><h3>Sevinc xanım</h3><p>“Oğlum evdə kitab oxumağı sevmirdi. Mənim edə bilmədiyimi siz etmisiniz, təşəkkür edirəm.”</p></article>
+            <article class="testimonial reveal"><h3>Günel xanım</h3><p>“Müsbət təsirləri çox oldu. Övladım ilk dəfə bizdən ayrı özünü idarə etməyi öyrəndi, yeni dostlar qazandı.”</p></article>
+            <article class="testimonial reveal"><h3>Fatimə xanım</h3><p>“Zeynəb çox yaxşı təəssüratla gəlib evə. Maraqlı oyunlar və söhbətlər olduğunu deyir.”</p></article>
+            <article class="testimonial reveal"><h3>Elşanə xanım</h3><p>“Sevda çox sosial uşaq deyil, amma çox bəyənib razı gəlib. Gec tanıdığıma üzüldüm.”</p></article>
+            <article class="testimonial reveal"><h3>Elnarə xanım</h3><p>“Mirseyyid ilk dəfə tanımadığı insanlarla üç gün qaldı. Onun xoşbəxt olduğunu görəndə doğru seçim etdiyimə əmin oldum.”</p></article>
+            <article class="testimonial reveal"><h3>Afaq xanım</h3><p>“Bu üç gün ərzində övladlarımıza göstərdiyiniz diqqət və qayğı üçün çox sağ olun. Hər şey gözlədiyim kimi oldu.”</p></article>
+            <article class="testimonial reveal"><h3>Asim və Sədaqətin ailəsi</h3><p>Əvvəl qrup fəaliyyətlərinə qoşulmaq və ünsiyyət qurmaq çətin idi. Sonra özünəinam, sosial aktivlik və yeni dostluqlar artdı.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-section" id="elaqe">
+        <div class="container">
+          <div class="contact-panel reveal">
+            <div><span class="eyebrow">Əlaqə</span><h2>Coolab yoluna birlikdə başlayaq.</h2><p>Proqramlar, düşərgələr və yeni qəbul dövrləri barədə məlumat almaq üçün bizə yazın və ya sosial media hesablarımızı izləyin.</p></div>
+            <div class="contact-list">
+              <a class="contact-item" href="https://wa.me/994772441905" target="_blank" rel="noopener noreferrer"><span>WhatsApp</span>+994 77 244 19 05</a>
+              <a class="contact-item" href="mailto:coolabschool@gmail.com"><span>E-poçt</span>coolabschool@gmail.com</a>
+              <a class="contact-item" href="https://www.instagram.com/coolabschool/" target="_blank" rel="noopener noreferrer"><span>Instagram</span>@coolabschool</a>
+              <a class="contact-item" href="https://www.facebook.com/share/1C7kATb36Y/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"><span>Facebook</span>Coolab School</a>
+              <a class="contact-item" href="https://www.tiktok.com/@coolabschool?_r=1&_t=ZS-95FvwujugHh" target="_blank" rel="noopener noreferrer"><span>TikTok</span>@coolabschool</a>
+              <a class="contact-item" href="https://www.youtube.com/@CoolabSchoolTV" target="_blank" rel="noopener noreferrer"><span>YouTube</span>Coolab School TV</a>
+              <a class="contact-item" href="https://www.linkedin.com/company/coolab-school/home/" target="_blank" rel="noopener noreferrer"><span>LinkedIn</span>Coolab School</a>
+            </div>
           </div>
         </div>
       </section>
@@ -604,7 +736,7 @@
       <div class="container footer-row">
         <a class="brand logo-brand footer-logo" href="#ana-sehife" aria-label="Coolab School ana səhifə"><img class="brand-logo-image" src="assets/coolab-logo-second.png" alt="Coolab School" /></a>
         <p>Gələcək bacarıqları, real təcrübələr və yeni dostluqlar.</p>
-        <nav class="footer-nav" aria-label="Alt naviqasiya"><a href="#proqramlar">Proqramlar</a><a href="#dusergeler">Düşərgələr</a><a href="#elaqe">Əlaqə</a></nav>
+        <nav class="footer-nav" aria-label="Alt naviqasiya"><a href="coolab-nedir.html">Coolab nədir?</a><a href="fealiyyetler.html">Fəaliyyətlər</a><a href="#portfolio">Portfolio</a><a href="#elaqe">Əlaqə</a></nav>
       </div>
     </footer>
     <script type="module" src="experience.js"></script>

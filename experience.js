@@ -581,3 +581,61 @@ byId("ar-stop")?.addEventListener("click", () => {
   byId("ar-placeholder")?.classList.remove("is-hidden");
   arStatus.textContent = "Kamera bağlandı.";
 });
+
+const portfolioProfiles = {
+  explorer: {
+    name: "Kəşf edən şagird",
+    years: [["2024", "Maraq və uyğunlaşma"], ["2025", "İlk layihə və komanda işi"], ["2026", "Təqdimat və yeni hədəflər"]],
+    summary: "Robototexnika ilə başlayan maraq, layihə qurmaq və fikrini təqdim etmək bacarığına çevrilib.",
+    skills: [["Texnologiya", "78%"], ["Komanda işi", "82%"], ["Özünüifadə", "74%"]],
+  },
+  creator: {
+    name: "Yaradan şagird",
+    years: [["2024", "Rəng və forma ilə tanışlıq"], ["2025", "İlk dizayn portfolioları"], ["2026", "Vizual hekayə və təqdimat"]],
+    summary: "Sadə eskizlərdən başlayaraq ideyanı rəng, kompozisiya və vizual hekayə ilə ifadə etmə bacarığı formalaşıb.",
+    skills: [["Yaradıcılıq", "86%"], ["Dizayn düşüncəsi", "79%"], ["Təqdimat", "76%"]],
+  },
+  leader: {
+    name: "Komanda lideri",
+    years: [["2024", "Qrup fəaliyyətlərinə qoşulma"], ["2025", "Missiyalarda rol alma"], ["2026", "Komandanı yönləndirmə"]],
+    summary: "Komanda oyunları və düşərgə missiyaları ilə ünsiyyət, məsuliyyət və liderlik bacarıqları güclənib.",
+    skills: [["Komanda işi", "91%"], ["Liderlik", "83%"], ["Ünsiyyət", "88%"]],
+  },
+};
+
+const renderPortfolio = (profileKey) => {
+  const profile = portfolioProfiles[profileKey];
+  if (!profile) return;
+  byId("portfolio-name").textContent = profile.name;
+  byId("portfolio-range").textContent = "2024 → 2026";
+  byId("portfolio-summary").textContent = profile.summary;
+  const years = byId("portfolio-years");
+  const skills = byId("portfolio-skills");
+  years.replaceChildren();
+  skills.replaceChildren();
+  profile.years.forEach(([year, label]) => {
+    const node = document.createElement("div");
+    node.className = "portfolio-year";
+    const title = document.createElement("strong");
+    title.textContent = year;
+    const copy = document.createTextNode(label);
+    node.append(title, copy);
+    years.append(node);
+  });
+  profile.skills.forEach(([label, value]) => {
+    const node = document.createElement("div");
+    node.className = "portfolio-skill";
+    const title = document.createTextNode(label);
+    const score = document.createElement("b");
+    score.textContent = value;
+    node.append(title, score);
+    skills.append(node);
+  });
+};
+
+document.querySelectorAll("[data-portfolio-profile]").forEach((button) => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll("[data-portfolio-profile]").forEach((item) => item.classList.toggle("is-active", item === button));
+    renderPortfolio(button.dataset.portfolioProfile);
+  });
+});

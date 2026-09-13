@@ -1,0 +1,45 @@
+:root { --navy:#162d42; --blue:#087ec4; --cyan:#10b9d0; --yellow:#f7bf27; --orange:#ef8b39; --ink:#11233b; --muted:#53667c; --line:#dce7ef; --pale:#f4f9fc; }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; color:var(--ink); background:white; font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; line-height:1.55; }
+a { color:inherit; text-decoration:none; }
+.container { width:min(1120px,calc(100% - 40px)); margin:0 auto; }
+.site-header { position:sticky; top:0; z-index:3; background:var(--navy); border-bottom:1px solid rgba(190,232,248,.16); }
+.nav { min-height:86px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+.brand { width:84px; height:68px; display:block; overflow:hidden; border-radius:13px; box-shadow:0 10px 22px rgba(0,0,0,.14); }
+.brand img { display:block; width:100%; height:100%; object-fit:cover; }
+.nav-links { display:flex; flex-wrap:wrap; gap:22px; color:#e8f6fb; font-size:.92rem; font-weight:800; }
+.nav-links a:hover { color:var(--cyan); }
+.button { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:0 18px; border-radius:13px; color:var(--navy); background:var(--yellow); font-weight:900; }
+.page-hero { padding:84px 0 72px; color:white; background:radial-gradient(circle at 82% 18%,rgba(16,185,208,.25),transparent 26%),linear-gradient(132deg,#162d42,#084f86); }
+.eyebrow { display:inline-flex; padding:8px 12px; border-radius:999px; color:white; background:rgba(255,255,255,.12); font-size:.8rem; font-weight:850; letter-spacing:.03em; }
+h1,h2,h3,p { margin-top:0; }
+h1 { max-width:760px; margin:17px 0; font-size:clamp(2.8rem,6vw,5.2rem); line-height:.98; letter-spacing:-.07em; }
+.page-hero p { max-width:650px; margin-bottom:0; color:#d4eaf5; font-size:1.08rem; line-height:1.7; }
+.content-section { padding:88px 0; }
+.content-section.alt { background:var(--pale); }
+.heading { display:grid; grid-template-columns:1.15fr .85fr; gap:36px; align-items:end; margin-bottom:34px; }
+.heading h2 { margin-bottom:0; font-size:clamp(2rem,4vw,3.35rem); line-height:1.06; letter-spacing:-.06em; }
+.heading p { margin-bottom:0; color:var(--muted); line-height:1.7; }
+.copy { max-width:850px; color:#40556e; font-size:1.02rem; line-height:1.8; }
+.copy p + p { margin-top:16px; }
+.programs { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+.program { padding:27px; border:1px solid var(--line); border-radius:20px; background:white; }
+.program span { display:block; margin-bottom:30px; color:var(--cyan); font-size:.78rem; font-weight:950; letter-spacing:.12em; }
+.program h3 { margin-bottom:10px; font-size:1.32rem; letter-spacing:-.04em; }
+.program p { margin-bottom:0; color:var(--muted); line-height:1.65; }
+.program:nth-child(2) span,.program:nth-child(5) span { color:var(--yellow); }
+.program:nth-child(3) span { color:var(--orange); }
+.program:nth-child(4) span,.program:nth-child(6) span { color:var(--blue); }
+.experience-list { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+.experience-list article { min-height:190px; padding:22px; border-radius:18px; color:white; background:var(--navy); }
+.experience-list article:nth-child(2) { background:#0b5c99; }
+.experience-list article:nth-child(3) { color:var(--navy); background:var(--yellow); }
+.experience-list article:nth-child(4) { background:var(--orange); }
+.experience-list h3 { font-size:1.12rem; }
+.experience-list p { margin:0; color:inherit; opacity:.86; font-size:.9rem; line-height:1.6; }
+.return { display:inline-flex; gap:8px; margin-top:30px; color:var(--blue); font-weight:900; }
+footer { padding:34px 0; color:#c7dfeb; background:var(--navy); }
+.footer-row { display:flex; justify-content:space-between; align-items:center; gap:20px; }
+.footer-row p { margin:0; font-size:.9rem; }
+@media (max-width:760px) { .nav-links { display:none; } .nav { min-height:72px; } .brand { width:58px; height:48px; border-radius:10px; } .page-hero { padding:62px 0 54px; } .heading,.programs,.experience-list { grid-template-columns:1fr; } .content-section { padding:65px 0; } .footer-row { align-items:flex-start; flex-direction:column; } }
