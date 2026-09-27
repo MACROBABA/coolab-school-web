@@ -5,3 +5,10 @@ coolab-school-site.tar.gz
 .env
 .env.*
 !.env.example
+wwwroot/
+*.db
+*.db-shm
+*.db-wal
+bin/
+obj/
+.vs/

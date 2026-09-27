@@ -5,6 +5,7 @@ const control = document.querySelector("#orbit-control");
 const cards = [...document.querySelectorAll(".program-card")];
 const message = document.querySelector("#program-message");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const s = (value) => window.CoolabI18n?.source?.(value) ?? value;
 
 const revealElements = document.querySelectorAll(".reveal");
 if ("IntersectionObserver" in window) {
@@ -127,7 +128,7 @@ try {
     keyLight.color.setHex(mode.glow);
     warmLight.color.setHex(mode.warm);
     wire.material.color.setHex(mode.glow);
-    control.textContent = mode.name;
+    control.textContent = s(mode.name);
   };
 
   const resize = () => {
@@ -164,23 +165,23 @@ try {
   canvas.addEventListener("click", () => control.click());
 
   cards.forEach((card) => {
-    card.addEventListener("click", () => {
-      const selected = card.classList.contains("is-selected");
+    const highlightProgram = () => {
       cards.forEach((item) => {
         item.classList.remove("is-selected");
-        item.setAttribute("aria-pressed", "false");
       });
-      if (selected) {
-        setMode(modes[modeIndex]);
-        message.textContent = "Bir istiqamət seç, 3D səhnənin enerjisi dəyişsin.";
-        return;
-      }
       card.classList.add("is-selected");
-      card.setAttribute("aria-pressed", "true");
       const program = card.dataset.program;
-      setSceneColor(card.dataset.color, `${program} rejimi`);
-      message.textContent = `${program} seçildi — 3D səhnə həmin istiqamətin rənginə keçdi.`;
-    });
+      const localizedProgram = s(program);
+      const language = window.CoolabI18n?.locale ?? "az";
+      setSceneColor(card.dataset.color, language === "en" ? `${localizedProgram} mode` : language === "ru" ? `Режим: ${localizedProgram}` : `${localizedProgram} rejimi`);
+      message.textContent = language === "en"
+        ? `${localizedProgram} is selected — the 3D scene now uses this track’s colour.`
+        : language === "ru"
+          ? `Выбрано направление «${localizedProgram}» — 3D-сцена получила его цвет.`
+          : `${localizedProgram} seçildi — 3D səhnə həmin istiqamətin rənginə keçdi.`;
+    };
+    card.addEventListener("pointerenter", highlightProgram);
+    card.addEventListener("focusin", highlightProgram);
   });
 
   const clock = new THREE.Clock();
@@ -232,7 +233,7 @@ const updateSkills = () => {
       const row = document.createElement("div");
       row.className = "progress-row";
       const labelNode = document.createElement("span");
-      labelNode.textContent = label;
+      labelNode.textContent = s(label);
       const track = document.createElement("div");
       track.className = "progress-track";
       const fill = document.createElement("div");
@@ -310,8 +311,8 @@ if (robotCanvas) {
     } else {
       [-0.7, 0.7].forEach((x) => addPart(new THREE.CylinderGeometry(0.46, 0.46, 0.3, 24), 0x11233b, [x, -0.86, 0], [Math.PI / 2, 0, 0]));
     }
-    const labels = { blue: "Mavi", yellow: "Sarı", orange: "Narıncı" };
-    robotStatus.textContent = `${labels[robotState.body]} ${robotState.move === "hover" ? "uçan" : "təkərli"} kəşf robotu hazırdır.`;
+    const labels = { blue: s("Mavi"), yellow: s("Sarı"), orange: s("Narıncı") };
+    robotStatus.textContent = s(`${labels[robotState.body]} ${robotState.move === "hover" ? "uçan" : "təkərli"} kəşf robotu hazırdır.`);
   };
   const resize = () => {
     const bounds = robotCanvas.getBoundingClientRect();
@@ -353,34 +354,234 @@ if (robotCanvas) {
 const ideaForm = byId("idea-form");
 const ideaOutput = byId("idea-output");
 if (ideaForm && ideaOutput) {
+  const ideaPresets = document.querySelectorAll("[data-idea-track]");
+  const projectIdeas = {
+    robotics: {
+      course: "Robototexnika", title: (topic) => `“${topic} üçün ağıllı sistem”`,
+      text: (topic) => `“${topic}” mövzusunda sensor və LED-lərlə işləyən kiçik robototexnika prototipi qurun.`,
+      steps: ["Problemi və ölçəcəyiniz məlumatı seçin.", "Sensoru, LED-ləri və maketi birləşdirin.", "Sınaq nəticəsini komandanıza təqdim edin."],
+      skill: "tech",
+    },
+    design: {
+      course: "Qrafik dizayn", title: (topic) => `“${topic}” üçün vizual hekayə`,
+      text: (topic) => `“${topic}” mövzusunu üç vizual kadr və vahid rəng palitrası ilə izah edən dizayn seriyası hazırlayın.`,
+      steps: ["Mesajı və auditoriyanı müəyyən edin.", "Rəng palitrası, şrift və kompozisiya seçin.", "Poster və sosial media vizualını təqdim edin."],
+      skill: "creative",
+    },
+    ai: {
+      course: "Süni intellekt", title: (topic) => `“${topic}” üçün ağıllı araşdırma`,
+      text: (topic) => `“${topic}” haqqında etibarlı mənbələri və süni intellektdən alınan cavabları müqayisə edən kiçik araşdırma hazırlayın.`,
+      steps: ["Araşdırma sualını və mənbələri seçin.", "Dəqiq sorğu yazın, cavabları yoxlayın.", "Nəticəni infoqrafika ilə izah edin."],
+      skill: "tech",
+    },
+    programming: {
+      course: "Proqramlaşdırma", title: (topic) => `“${topic}” üçün mini tətbiq`,
+      text: (topic) => `“${topic}” mövzusunda istifadəçiyə fayda verən sadə, interaktiv veb səhifə və ya oyun yaradın.`,
+      steps: ["İstifadəçini və əsas funksiyanı müəyyən edin.", "Ekranları planlayın, ilk versiyanı kodlayın.", "Dostunuzla test edin və təkmilləşdirin."],
+      skill: "tech",
+    },
+  };
+
+  const formatCopy = {
+    team: "Komandada tədqiqatçı, dizayner və təqdimatçı rollarını bölüşdürün.",
+    solo: "Fərdi eskizlə başlayın, sonra mentorla növbəti addımı seçin.",
+    camp: "Düşərgədə sürətli prototip qurub günün sonunda nümayiş etdirin.",
+  };
+
+  const renderIdea = ({ interest, track, age, format }) => {
+    const idea = projectIdeas[track] ?? projectIdeas.robotics;
+    const topic = interest || "gələcək şəhər";
+    ideaOutput.replaceChildren();
+
+    const meta = document.createElement("div");
+    meta.className = "idea-result-meta";
+    [idea.course, age, format === "team" ? "Komanda ilə" : format === "solo" ? "Fərdi" : "Düşərgə üçün"].forEach((value) => {
+      const tag = document.createElement("span");
+      tag.textContent = value;
+      meta.append(tag);
+    });
+    const title = document.createElement("strong");
+    title.textContent = idea.title(topic);
+    const copy = document.createElement("p");
+    copy.textContent = `${idea.text(topic)} ${formatCopy[format]}`;
+    const plan = document.createElement("div");
+    plan.className = "idea-plan";
+    ["Planla", "Hazırla", "Təqdim et"].forEach((label, index) => {
+      const step = document.createElement("div");
+      step.className = "idea-step";
+      const heading = document.createElement("b");
+      heading.textContent = `${index + 1}. ${label}`;
+      step.append(heading, document.createTextNode(idea.steps[index]));
+      plan.append(step);
+    });
+    ideaOutput.append(meta, title, copy, plan);
+    addSkill(idea.skill, 5);
+  };
+
+  ideaPresets.forEach((preset) => {
+    preset.addEventListener("click", () => {
+      byId("idea-track").value = preset.dataset.ideaTrack;
+      byId("idea-interest").value = preset.dataset.ideaInterest;
+      ideaPresets.forEach((item) => item.classList.toggle("is-active", item === preset));
+    });
+  });
+
   ideaForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    const interest = byId("idea-interest").value.trim() || "sevdiyin mövzu";
-    const track = byId("idea-track").value;
-    const format = byId("idea-format").value;
-    const ideas = {
-      tech: { title: "Kəşf edən ağıllı robot", text: `“${interest}” mövzusunda kiçik robot qur. Sensorla məlumat topla, nəticəni ekranda göstər və modelini sına.` },
-      design: { title: "Rəqəmsal hekayə studiyası", text: `“${interest}” haqqında üç kadrdan ibarət vizual hekayə hazırla. Rəng paletini seç, personaj yarat və işini təqdim et.` },
-      social: { title: "Faydalı fikir xəritəsi", text: `“${interest}” üçün komandanla faydalı həll düşün. Problemi izah et, prototipini qur və insanlardan rəy topla.` },
-    };
-    const formatText = { team: "Komandada rolları bölüşdür.", solo: "İdeyanı fərdi eskizdən başlat.", camp: "Düşərgədə sınaq meydanında təqdim et." }[format];
-    const result = ideas[track];
-    ideaOutput.replaceChildren();
-    const title = document.createElement("strong");
-    title.textContent = result.title;
-    const copy = document.createElement("p");
-    copy.textContent = `${result.text} ${formatText}`;
-    ideaOutput.append(title, copy);
-    addSkill(track === "tech" ? "tech" : track === "design" ? "creative" : "team", 5);
+    renderIdea({
+      interest: byId("idea-interest").value.trim(),
+      track: byId("idea-track").value,
+      age: byId("idea-age").value,
+      format: byId("idea-format").value,
+    });
   });
 }
 
 const gameBoard = byId("game-board");
 const gameTarget = byId("game-target");
 const gameStart = byId("game-start");
+const gameStatus = byId("game-lab-status");
+const labAccountLink = byId("lab-account-link");
+const publicDemoKey = "coolab.energy-demo.completed";
+const labApiBase = window.CoolabApiUrl
+  ?? (window.location.port === "7103"
+    ? `${window.location.origin}/api/v1`
+    : "https://localhost:7103/api/v1");
 let gameTimer;
 let gameScore = 0;
 let gameTime = 30;
+let activeGameSession = null;
+let activeArSession = null;
+
+const readLabSession = () => {
+  try { return JSON.parse(localStorage.getItem("coolab.auth") ?? "null"); }
+  catch { return null; }
+};
+
+const isStudentAccount = () => {
+  const user = readLabSession()?.user;
+  return user?.roles?.some((role) => String(role).toLowerCase() === "student") ?? false;
+};
+
+const labCopy = () => ({
+  az: {
+    minute: "dəq", second: "san", publicDemoReady: "Qeydiyyatsız bir demo oyun açıqdır.",
+    demoFinished: "Demo tamamlandı. Digər oyunlar şagird kabinetində açılır.",
+    demoAlready: "Demo artıq oynanılıb. Tam laboratoriyanı açmaq üçün şagird hesabı yarat.",
+    labTimeLeft: (time) => `Bu gün laboratoriya üçün ${time} vaxtın qalıb.`,
+    labDone: "Bu günkü laboratoriya vaxtın tamamlandı. Sabah yenidən davam edə bilərsən.",
+    checkTime: "Laboratoriya vaxtını yoxlamaq üçün səhifəni yenilə.",
+    startSession: (time) => `Laboratoriya sessiyası açıldı. Bu gün ${time} vaxtın qalıb.`,
+    resultSaved: (time) => `Nəticən kabinetində yadda saxlandı. Bu gün ${time} vaxtın qalıb.`,
+    resultSavedDone: "Nəticən kabinetində yadda saxlandı. Bu günkü laboratoriya vaxtın tamamlandı.",
+    demoFinishedRegister: "Demo tamamlandı. Digər oyunları oynamaq üçün şagird kimi qeydiyyatdan keç.",
+    robotOpen: (time) => `Robot studiyası açıqdır. Bu gün ${time} vaxtın qalıb.`,
+    arOpen: (time) => `AR laboratoriyası açıldı. Bu gün ${time} vaxtın qalıb.`,
+    arFinished: (time) => `AR sessiyası tamamlandı. Bu gün ${time} vaxtın qalıb.`,
+    arFinishedDone: "Bu günkü laboratoriya vaxtın tamamlandı.",
+  },
+  en: {
+    minute: "min", second: "sec", publicDemoReady: "One public demo game is available.",
+    demoFinished: "The demo is complete. Other games open in the student dashboard.",
+    demoAlready: "This demo has already been played. Create a student account to open the full lab.",
+    labTimeLeft: (time) => `You have ${time} of lab time left today.`,
+    labDone: "Your lab time for today is complete. You can continue tomorrow.",
+    checkTime: "Refresh the page to check your lab time.",
+    startSession: (time) => `Your lab session is open. You have ${time} left today.`,
+    resultSaved: (time) => `Your result was saved in your dashboard. You have ${time} left today.`,
+    resultSavedDone: "Your result was saved in your dashboard. Your lab time for today is complete.",
+    demoFinishedRegister: "The demo is complete. Register as a student to play the other games.",
+    robotOpen: (time) => `Robot Studio is open. You have ${time} left today.`,
+    arOpen: (time) => `The AR lab is open. You have ${time} left today.`,
+    arFinished: (time) => `The AR session is complete. You have ${time} left today.`,
+    arFinishedDone: "Your lab time for today is complete.",
+  },
+  ru: {
+    minute: "мин", second: "сек", publicDemoReady: "Доступна одна открытая демо-игра.",
+    demoFinished: "Демо завершено. Остальные игры доступны в кабинете ученика.",
+    demoAlready: "Демо уже пройдено. Создайте аккаунт ученика, чтобы открыть всю лабораторию.",
+    labTimeLeft: (time) => `Сегодня у вас осталось ${time} времени в лаборатории.`,
+    labDone: "Время лаборатории на сегодня завершено. Продолжите завтра.",
+    checkTime: "Обновите страницу, чтобы проверить время лаборатории.",
+    startSession: (time) => `Сессия лаборатории открыта. Сегодня у вас осталось ${time}.`,
+    resultSaved: (time) => `Результат сохранён в кабинете. Сегодня у вас осталось ${time}.`,
+    resultSavedDone: "Результат сохранён в кабинете. Время лаборатории на сегодня завершено.",
+    demoFinishedRegister: "Демо завершено. Зарегистрируйтесь как ученик, чтобы играть в остальные игры.",
+    robotOpen: (time) => `Студия робота открыта. Сегодня у вас осталось ${time}.`,
+    arOpen: (time) => `AR-лаборатория открыта. Сегодня у вас осталось ${time}.`,
+    arFinished: (time) => `AR-сессия завершена. Сегодня у вас осталось ${time}.`,
+    arFinishedDone: "Время лаборатории на сегодня завершено.",
+  },
+}[window.CoolabI18n?.locale ?? "az"] ?? {
+  minute: "dəq", second: "san", publicDemoReady: "Qeydiyyatsız bir demo oyun açıqdır.",
+  demoFinished: "Demo tamamlandı. Digər oyunlar şagird kabinetində açılır.", demoAlready: "Demo artıq oynanılıb.",
+  labTimeLeft: (time) => `Bu gün laboratoriya üçün ${time} vaxtın qalıb.`, labDone: "Bu günkü laboratoriya vaxtın tamamlandı.",
+  checkTime: "Laboratoriya vaxtını yoxlamaq üçün səhifəni yenilə.", startSession: (time) => `Laboratoriya sessiyası açıldı. Bu gün ${time} vaxtın qalıb.`,
+  resultSaved: (time) => `Nəticən kabinetində yadda saxlandı. Bu gün ${time} vaxtın qalıb.`, resultSavedDone: "Nəticən kabinetində yadda saxlandı.",
+  demoFinishedRegister: "Demo tamamlandı.", robotOpen: (time) => `Robot studiyası açıqdır. Bu gün ${time} vaxtın qalıb.`,
+  arOpen: (time) => `AR laboratoriyası açıldı. Bu gün ${time} vaxtın qalıb.`, arFinished: (time) => `AR sessiyası tamamlandı. Bu gün ${time} vaxtın qalıb.`, arFinishedDone: "Bu günkü laboratoriya vaxtın tamamlandı.",
+});
+
+const formatLabTime = (seconds = 0) => {
+  const copy = labCopy();
+  const minutes = Math.floor(Math.max(0, seconds) / 60);
+  const remainingSeconds = Math.max(0, seconds) % 60;
+  return minutes ? `${minutes} ${copy.minute} ${remainingSeconds} ${copy.second}` : `${remainingSeconds} ${copy.second}`;
+};
+
+const setGameStatus = (message) => {
+  if (gameStatus) gameStatus.textContent = message;
+};
+
+const labRequest = async (path, options = {}) => {
+  const session = readLabSession();
+  if (!session?.accessToken) throw new Error("Laboratoriyanı açmaq üçün şagird hesabı ilə daxil olun.");
+  const response = await fetch(`${labApiBase}${path}`, {
+    ...options,
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.accessToken}`, ...(options.headers ?? {}) },
+  });
+  const payload = await response.json().catch(() => null);
+  if (!response.ok) throw new Error(payload?.detail || payload?.title || "Laboratoriya hazırda açıla bilmədi.");
+  return payload;
+};
+
+const startLabSession = (activitySlug) => labRequest("/student/lab/sessions", {
+  method: "POST",
+  body: JSON.stringify({ activitySlug }),
+});
+
+const finishLabSession = (sessionId) => sessionId
+  ? labRequest(`/student/lab/sessions/${sessionId}/complete`, { method: "POST" })
+  : Promise.resolve(null);
+
+const updateLabEntryState = async () => {
+  const copy = labCopy();
+  const student = isStudentAccount();
+  document.querySelectorAll("[data-lab-protected]").forEach((panel) => panel.classList.toggle("is-locked", !student));
+  if (labAccountLink) labAccountLink.hidden = !student;
+  if (!student) {
+    setGameStatus(localStorage.getItem(publicDemoKey) ? copy.demoFinished : copy.publicDemoReady);
+    return;
+  }
+  try {
+    const allowance = await labRequest("/student/lab/allowance");
+    setGameStatus(allowance.remainingSeconds > 0 ? copy.labTimeLeft(formatLabTime(allowance.remainingSeconds)) : copy.labDone);
+  } catch {
+    setGameStatus(copy.checkTime);
+  }
+};
+
+const saveGameScore = async (score, labSessionId = null) => {
+  if (!isStudentAccount()) return;
+  try {
+    await labRequest("/student/games/energy-collection/progress", {
+      method: "POST",
+      body: JSON.stringify({ score, labSessionId }),
+    });
+  } catch {
+    setGameStatus("Nəticə bu dəfə yadda saxlanmadı. Yenidən cəhd edə bilərsən.");
+  }
+};
 const placeTarget = () => {
   const bounds = gameBoard.getBoundingClientRect();
   const left = 20 + Math.random() * Math.max(10, bounds.width - 76);
@@ -396,13 +597,32 @@ if (gameBoard && gameTarget && gameStart) {
     placeTarget();
     addSkill("tech", 1);
   });
-  gameStart.addEventListener("click", () => {
-    clearInterval(gameTimer);
+  gameStart.addEventListener("click", async () => {
+    if (gameTimer) return;
+    if (!isStudentAccount() && localStorage.getItem(publicDemoKey)) {
+      setGameStatus(labCopy().demoAlready);
+      document.querySelector('[data-auth-open="register"]')?.click();
+      return;
+    }
+    gameStart.disabled = true;
+    if (isStudentAccount()) {
+      try {
+        activeGameSession = await startLabSession("energy-collection");
+        gameTime = Math.min(30, activeGameSession.sessionLimitSeconds);
+        setGameStatus(labCopy().startSession(formatLabTime(activeGameSession.remainingDailySeconds)));
+      } catch (error) {
+        gameStart.disabled = false;
+        setGameStatus(error.message);
+        return;
+      }
+    } else {
+      activeGameSession = null;
+      gameTime = 30;
+    }
     gameScore = 0;
-    gameTime = 30;
     byId("game-score").textContent = "0";
-    byId("game-time").textContent = "30";
-    gameStart.textContent = "Enerjini topla!";
+    byId("game-time").textContent = gameTime;
+    gameStart.textContent = s("Enerjini topla!");
     gameTarget.classList.add("is-visible");
     placeTarget();
     gameTimer = window.setInterval(() => {
@@ -412,33 +632,41 @@ if (gameBoard && gameTarget && gameStart) {
         clearInterval(gameTimer);
         gameTimer = undefined;
         gameTarget.classList.remove("is-visible");
-        gameStart.textContent = `${gameScore} xal — yenidən oyna`;
+        gameStart.disabled = false;
+        gameStart.textContent = `${gameScore} ${s("xal — yenidən oyna")}`;
         addSkill("tech", Math.min(8, Math.ceil(gameScore / 2)));
+        if (isStudentAccount()) {
+          const completedGameSession = activeGameSession;
+          activeGameSession = null;
+          void finishLabSession(completedGameSession?.sessionId).then(async (allowance) => {
+            await saveGameScore(gameScore, completedGameSession?.sessionId);
+            setGameStatus(allowance?.remainingSeconds > 0
+              ? labCopy().resultSaved(formatLabTime(allowance.remainingSeconds))
+              : labCopy().resultSavedDone);
+          });
+        } else {
+          localStorage.setItem(publicDemoKey, "true");
+          setGameStatus(labCopy().demoFinishedRegister);
+        }
       }
     }, 1000);
   });
 }
 
-const zoneContent = {
-  robot: ["Robot lab", "Sensorlarla tanış ol, robotunun missiyasını seç və komandanla sınaq meydanına çıx."],
-  art: ["Dizayn studiyası", "Poster, animasiya və rəqəmsal hekayə üçün rəng, forma və ideyaları bir araya gətir."],
-  team: ["Komanda meydanı", "Sürətli oyunlar və kiçik missiyalarla liderlik, ünsiyyət və əməkdaşlığı sına."],
-  nature: ["Kəşf zonası", "Təbiəti müşahidə et, suallar yarat və elmi kiçik təcrübələrlə kəşf et."],
-};
-document.querySelectorAll(".map-zone").forEach((button) => {
-  button.addEventListener("click", () => {
-    document.querySelectorAll(".map-zone").forEach((item) => item.classList.toggle("is-active", item === button));
-    const [title, copy] = zoneContent[button.dataset.zone];
-    const detail = byId("zone-detail");
-    detail.replaceChildren();
-    const heading = document.createElement("h4");
-    heading.textContent = title;
-    const paragraph = document.createElement("p");
-    paragraph.textContent = copy;
-    detail.append(heading, paragraph);
-    addSkill(button.dataset.zone === "robot" ? "tech" : button.dataset.zone === "art" ? "creative" : "team", 3);
+document.querySelectorAll("#robot-builder .part-choice").forEach((button) => {
+  button.addEventListener("click", async () => {
+    if (!isStudentAccount()) return;
+    try {
+      const session = await startLabSession("robot-builder");
+      setGameStatus(labCopy().robotOpen(formatLabTime(session.remainingDailySeconds)));
+    } catch (error) {
+      setGameStatus(error.message);
+    }
   });
 });
+
+void updateLabEntryState();
+window.addEventListener("coolab:authchange", () => { void updateLabEntryState(); });
 
 const calendarData = [
   { month: "Sentyabr 2026", events: [{ day: "14", title: "Robot missiyası", info: "Sensorlar və təkərli robotlarla açıq laboratoriya." }, { day: "21", title: "Dizayn günü", info: "Poster və rəqəmsal hekayə workshopu." }, { day: "27", title: "Ailə təqdimatı", info: "Uşaqlar həftəlik layihələrini ailələrinə göstərir." }] },
@@ -448,7 +676,7 @@ const calendarData = [
 let calendarIndex = 0;
 const renderCalendar = () => {
   const entry = calendarData[calendarIndex];
-  byId("calendar-month").textContent = entry.month;
+  byId("calendar-month").textContent = s(entry.month);
   const list = byId("calendar-list");
   list.replaceChildren();
   entry.events.forEach((event, index) => {
@@ -459,19 +687,19 @@ const renderCalendar = () => {
     date.textContent = event.day;
     const copy = document.createElement("span");
     const title = document.createElement("strong");
-    title.textContent = event.title;
+    title.textContent = s(event.title);
     const note = document.createElement("small");
-    note.textContent = "Detallara bax";
+    note.textContent = s("Detallara bax");
     copy.append(title, note);
     button.append(date, copy);
     button.addEventListener("click", () => {
       list.querySelectorAll("button").forEach((item) => item.classList.toggle("is-active", item === button));
-      byId("calendar-detail").textContent = `${event.day} — ${event.info}`;
+      byId("calendar-detail").textContent = `${event.day} — ${s(event.info)}`;
     });
     if (index === 0) button.classList.add("is-active");
     list.append(button);
   });
-  byId("calendar-detail").textContent = `${entry.events[0].day} — ${entry.events[0].info}`;
+  byId("calendar-detail").textContent = `${entry.events[0].day} — ${s(entry.events[0].info)}`;
 };
 if (byId("calendar-prev") && byId("calendar-next")) {
   byId("calendar-prev").addEventListener("click", () => { calendarIndex = (calendarIndex + calendarData.length - 1) % calendarData.length; renderCalendar(); });
@@ -486,28 +714,63 @@ const addChatMessage = (text, type = "bot") => {
   messageNode.textContent = text;
   chatMessages.append(messageNode);
   chatMessages.scrollTop = chatMessages.scrollHeight;
+  return messageNode;
 };
-const replyToChat = (text) => {
-  const normalized = text.toLocaleLowerCase("az");
-  if (/(robot|kod|oyun|texnolog)/.test(normalized)) return "Robototexnika ilə başlamaq sənə uyğun görünür. Əvvəl 3D robot studiyasında hissələri sına, sonra Robot lab düşərgəsinə qoşul.";
-  if (/(dizayn|rəng|şəkil|vizual)/.test(normalized)) return "Qrafik dizayn proqramında rəng, forma və hekayə ilə işləyəcəksən. AI ideya generatorunda bir mövzu yazıb ilk layihəni seçə bilərsən.";
-  if (/(düşərgə|kamp|yay)/.test(normalized)) return "Düşərgədə hər gün fərqli missiya, komanda oyunu və yaradıcı layihə var. Xəritədən Kəşf zonası və Komanda meydanına bax.";
-  if (/(13|14|15|16|17)/.test(normalized)) return "Bu yaş üçün layihə əsaslı robototexnika, dizayn və oyun laboratoriyası yaxşı başlanğıcdır. Hansı mövzunu daha çox sevdiyini yaz, onu dəqiqləşdirək.";
-  return "Sənin marağın əsasında yaxşı başlanğıc taparıq. Robot, dizayn, oyun, düşərgə və ya təqdimat mövzularından birini yaz.";
+const salesChatBase = window.CoolabApiUrl ?? (window.location.port === "7103" ? `${window.location.origin}/api/v1` : "https://localhost:7103/api/v1");
+const chatSessionKey = "coolab.sales-chat-session";
+const getChatSession = () => {
+  const saved = localStorage.getItem(chatSessionKey);
+  if (saved && saved.length <= 80) return saved;
+  const created = window.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  localStorage.setItem(chatSessionKey, created);
+  return created;
 };
-const sendChat = (text) => {
+const chatLeadForm = byId("chat-lead-form");
+const showLeadForm = (suggestedProgram = "") => {
+  if (!chatLeadForm) return;
+  chatLeadForm.hidden = false;
+  const program = byId("chat-suggested-program");
+  if (program && suggestedProgram) program.value = suggestedProgram;
+};
+const publicApi = async (path, body) => {
+  const response = await fetch(`${salesChatBase}${path}`, { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(body) });
+  if (!response.ok) { const problem = await response.json().catch(() => null); throw new Error(problem?.detail || problem?.title || s("Çat hazırda əlçatan deyil. Bir qədər sonra yenidən cəhd edin.")); }
+  return response.json();
+};
+const sendChat = async (text) => {
   const messageText = text.trim();
   if (!messageText) return;
   addChatMessage(messageText, "user");
-  window.setTimeout(() => addChatMessage(replyToChat(messageText)), 280);
+  const typing = addChatMessage(s("Yazır…")); typing.classList.add("typing");
+  const input = byId("chat-input"); const submit = byId("chat-form")?.querySelector("button");
+  if (input) input.disabled = true; if (submit) submit.disabled = true;
+  try {
+    const result = await publicApi("/sales-chat/messages", { sessionId:getChatSession(), message:messageText, locale:window.CoolabI18n?.locale ?? "az" });
+    localStorage.setItem(chatSessionKey, result.sessionId);
+    typing.remove(); addChatMessage(result.reply);
+    if (result.showContactForm || result.requiresHuman) showLeadForm(result.suggestedProgram);
+  } catch (error) { typing.remove(); addChatMessage(error.message); }
+  finally { if (input) input.disabled = false; if (submit) submit.disabled = false; input?.focus(); }
 };
 byId("chat-form")?.addEventListener("submit", (event) => {
   event.preventDefault();
   const input = byId("chat-input");
-  sendChat(input.value);
+  void sendChat(input.value);
   input.value = "";
 });
-document.querySelectorAll(".quick-prompt").forEach((button) => button.addEventListener("click", () => sendChat(button.textContent)));
+document.querySelectorAll(".quick-prompt").forEach((button) => button.addEventListener("click", () => {
+  if (button.id === "chat-human-button") { showLeadForm(); addChatMessage(s("Əlaqə formasını doldurun, proqram mütəxəssisi sizə cavab versin.")); return; }
+  void sendChat(button.textContent);
+}));
+chatLeadForm?.addEventListener("submit", async (event) => {
+  event.preventDefault(); const form = event.currentTarget; const feedback = byId("chat-lead-feedback"); const submit = form.querySelector("button"); const values = new FormData(form);
+  submit.disabled = true; if (feedback) feedback.textContent = s("Göndərilir…");
+  try {
+    await publicApi("/sales-chat/leads", { sessionId:getChatSession(), fullName:values.get("fullName"), contact:values.get("contact"), childAge:values.get("childAge") ? Number(values.get("childAge")) : null, interests:values.get("interests") || null, suggestedProgram:values.get("suggestedProgram") || null, consentToContact:values.get("consentToContact") === "on" });
+    form.reset(); if (feedback) feedback.textContent = s("Sorğunuz satış komandasına ötürüldü. Tezliklə sizinlə əlaqə saxlayacağıq.");
+  } catch (error) { if (feedback) feedback.textContent = error.message; }
+  finally { submit.disabled = false; }
+});
 
 const arVideo = byId("ar-video");
 const arCanvas = byId("ar-canvas");
@@ -555,8 +818,17 @@ const setupArOverlay = () => {
   return arRender;
 };
 byId("ar-start")?.addEventListener("click", async () => {
+  if (isStudentAccount()) {
+    try {
+      activeArSession = await startLabSession("ar-robot");
+      setGameStatus(labCopy().arOpen(formatLabTime(activeArSession.remainingDailySeconds)));
+    } catch (error) {
+      arStatus.textContent = error.message;
+      return;
+    }
+  }
   if (!navigator.mediaDevices?.getUserMedia) {
-    arStatus.textContent = "Bu brauzerdə kamera funksiyası əlçatan deyil.";
+    arStatus.textContent = s("Bu brauzerdə kamera funksiyası əlçatan deyil.");
     return;
   }
   try {
@@ -567,75 +839,177 @@ byId("ar-start")?.addEventListener("click", async () => {
     arRunning = true;
     const render = setupArOverlay();
     render?.();
-    arStatus.textContent = "AR səhnəsi aktivdir — robot görüntünün üzərindədir.";
+    arStatus.textContent = s("AR səhnəsi aktivdir — robot görüntünün üzərindədir.");
     addSkill("tech", 4);
   } catch {
-    arStatus.textContent = "Kamera açılmadı. İcazəni yoxla və yenidən cəhd et.";
+    if (activeArSession?.sessionId) void finishLabSession(activeArSession.sessionId);
+    activeArSession = null;
+    arStatus.textContent = s("Kamera açılmadı. İcazəni yoxla və yenidən cəhd et.");
   }
 });
 byId("ar-stop")?.addEventListener("click", () => {
+  const completedArSession = activeArSession;
+  activeArSession = null;
+  if (completedArSession?.sessionId) {
+    void finishLabSession(completedArSession.sessionId).then((allowance) => {
+      if (allowance) setGameStatus(allowance.remainingSeconds > 0
+        ? labCopy().arFinished(formatLabTime(allowance.remainingSeconds))
+        : labCopy().arFinishedDone);
+    });
+  }
   cameraStream?.getTracks().forEach((track) => track.stop());
   cameraStream = undefined;
   arRunning = false;
   if (arVideo) arVideo.srcObject = null;
   byId("ar-placeholder")?.classList.remove("is-hidden");
-  arStatus.textContent = "Kamera bağlandı.";
+  arStatus.textContent = s("Kamera bağlandı.");
 });
 
-const portfolioProfiles = {
-  explorer: {
-    name: "Kəşf edən şagird",
-    years: [["2024", "Maraq və uyğunlaşma"], ["2025", "İlk layihə və komanda işi"], ["2026", "Təqdimat və yeni hədəflər"]],
-    summary: "Robototexnika ilə başlayan maraq, layihə qurmaq və fikrini təqdim etmək bacarığına çevrilib.",
-    skills: [["Texnologiya", "78%"], ["Komanda işi", "82%"], ["Özünüifadə", "74%"]],
-  },
-  creator: {
-    name: "Yaradan şagird",
-    years: [["2024", "Rəng və forma ilə tanışlıq"], ["2025", "İlk dizayn portfolioları"], ["2026", "Vizual hekayə və təqdimat"]],
-    summary: "Sadə eskizlərdən başlayaraq ideyanı rəng, kompozisiya və vizual hekayə ilə ifadə etmə bacarığı formalaşıb.",
-    skills: [["Yaradıcılıq", "86%"], ["Dizayn düşüncəsi", "79%"], ["Təqdimat", "76%"]],
-  },
-  leader: {
-    name: "Komanda lideri",
-    years: [["2024", "Qrup fəaliyyətlərinə qoşulma"], ["2025", "Missiyalarda rol alma"], ["2026", "Komandanı yönləndirmə"]],
-    summary: "Komanda oyunları və düşərgə missiyaları ilə ünsiyyət, məsuliyyət və liderlik bacarıqları güclənib.",
-    skills: [["Komanda işi", "91%"], ["Liderlik", "83%"], ["Ünsiyyət", "88%"]],
-  },
+const portfolioStudents = [
+  { name:"Mahir", image:"assets/mahir-robotics.jpg", program:"Robototexnika proqramı iştirakçısı · ilk müstəqil layihəsinə doğru irəliləyir.", journey:[["Başlanğıc","Robototexnika sahəsində əvvəlcədən layihə təcrübəsi yox idi."],["Öyrəndi","Elektronika, sensorlar və LED-lərlə işləmə məntiqini sınaqdan keçirdi."],["Yaratdı","Səs sensoru ilə idarə olunan LED sistemini müstəqil şəkildə qurdu."]], summary:"Robototexnika proqramına başlamazdan əvvəl Mahir bu sahədə heç bir layihə hazırlamamışdı. Proqramın sonunda isə öyrəndiyi bilikləri tətbiq edərək müstəqil layihələr qurdu.", skills:[["Elektronika əsasları","Qazandı"],["Sensor məntiqi","Qazandı"],["LED idarəetməsi","Qazandı"],["Prototipləşdirmə","Qazandı"],["Müstəqil problem həlli","Güclənir"],["Layihə təqdimatı","Güclənir"]], detailTitle:"Seçilmiş layihə: Səs sensoru ilə LED sistemi", detailIntro:"Layihənin ideyası:", detail:"səsi qəbul edən sensor vasitəsilə LED işıqların idarə olunması. Mahir öyrəndiyi bilikləri birləşdirərək işlək prototip hazırlayıb və layihəsini təqdim edib." },
+  { name:"Vahid", image:"assets/portfolio/vahid.webp", program:"Coolab inkişaf proqramı iştirakçısı", journey:[["Əvvəl","Ünsiyyətdə daha çəkingən idi."],["Məşq etdi","Fəaliyyətlərdə uşaqlara qoşulmağa başladı."],["Bu gün","Kollektiv işlərdə daha aktivdir."]], summary:"Əvvəllər daha utancaq və ünsiyyətdə çəkingən olan Vahid, zamanla uşaqlara daha rahat qoşulmağa və özünü ifadə etməyə başladı. İndi isə kollektiv fəaliyyətlərdə daha aktiv iştirak edir və özünəinamını daha rahat göstərir.", skills:[["Ünsiyyət","Güclənir"],["Komanda işi","Aktiv"],["Özünüifadə","Güclənir"],["Sosial iştirak","Artır"]], detailTitle:"İnkişaf yönümü: Ünsiyyət və komanda işi", detailIntro:"İrəliləyiş:", detail:"Vahid qrup mühitində özünü daha rahat ifadə edir və kollektiv fəaliyyətlərdə aktiv rol almağa davam edir." },
+  { name:"Muhsin", image:"assets/portfolio/muhsin.webp", program:"Coolab inkişaf proqramı iştirakçısı", journey:[["Əvvəl","Fəaliyyət zamanı diqqətini toplamaqda çətinlik çəkirdi."],["Məşq etdi","Enerjisini fəaliyyətlərə yönəltməyi öyrəndi."],["Bu gün","Məşğələlərdə daha sakit və fokuslu iştirak edir."]], summary:"İlk vaxtlarda daha hərəkətli və enerjili idi, fəaliyyət zamanı diqqətini toplamaqda çətinlik çəkirdi. İndi isə özünü daha yaxşı idarə edir, enerjisini fəaliyyətlərə yönəldir və məşğələlərdə daha sakit iştirak edir.", skills:[["Diqqətin idarəsi","Güclənir"],["Özünənəzarət","Güclənir"],["Məqsədyönlülük","Artır"],["Fəaliyyətə fokus","Aktiv"]], detailTitle:"İnkişaf yönümü: Fokus və özünənəzarət", detailIntro:"İrəliləyiş:", detail:"Muhsin enerjisini daha məqsədli istiqamətə yönəldərək məşğələlərdə diqqətli iştirakını gücləndirir." },
+  { name:"Asim Mehdi", image:"assets/portfolio/asim.webp", program:"Coolab inkişaf proqramı iştirakçısı", journey:[["Əvvəl","Sosial fəaliyyətlərə az qoşulurdu."],["Məşq etdi","Ünsiyyət qurmaq üçün daha çox imkan yaratdı."],["Bu gün","Daha aktivdir və yeni dostlar qazanır."]], summary:"Əvvəllər daha sakit və ünsiyyətdə çəkingən idi, sosial fəaliyyətlərə az qoşulurdu. İndi isə daha aktiv və ünsiyyətcil olub, özünəinamı artıb və yeni dostlar qazanıb.", skills:[["Ünsiyyət","Güclənir"],["Sosial iştirak","Artır"],["Özünəinam","Güclənir"],["Dostluq qurma","Aktiv"]], detailTitle:"İnkişaf yönümü: Sosial iştirak", detailIntro:"İrəliləyiş:", detail:"Asim Mehdi qrupda daha fəal rol alır, ünsiyyətini və yeni dostluqlar qurmaq bacarığını inkişaf etdirir." },
+  { name:"Sədaqət Mehdi", image:"assets/portfolio/sadaqat.webp", program:"Coolab inkişaf proqramı iştirakçısı", journey:[["Əvvəl","Qrup fəaliyyətlərinə qoşulmaqda çətinlik çəkirdi."],["Məşq etdi","Yeni təcrübələrə uyğunlaşmaq üçün addımlar atdı."],["Bu gün","Qrupda özünü daha sərbəst hiss edir."]], summary:"Əvvəllər qrup fəaliyyətlərinə qoşulmaqda çətinlik çəkir, yeni təcrübələrə uyğunlaşmaq üçün zamana ehtiyac duyurdu. İndi isə müxtəlif fəaliyyətlərə daha rahat qoşulur və qrup mühitində özünü daha sərbəst hiss edir.", skills:[["Uyğunlaşma","Güclənir"],["Qrupda iştirak","Aktiv"],["Yeni təcrübələr","Açıqdır"],["Özünəinam","Güclənir"]], detailTitle:"İnkişaf yönümü: Uyğunlaşma və qrup mühiti", detailIntro:"İrəliləyiş:", detail:"Sədaqət Mehdi müxtəlif fəaliyyətlərə daha rahat qoşulur və qrupda iştirakını davamlı şəkildə artırır." },
+  { name:"Seyyid", image:"assets/portfolio/seyyid.webp", program:"Coolab inkişaf proqramı iştirakçısı", journey:[["Əvvəl","Daha çox öz bildiyi ilə kifayətlənirdi."],["Məşq etdi","Sual verməyə və maraqlanmağa başladı."],["Bu gün","Yeni şeyləri özü sınamağa çalışır."]], summary:"Seyyid əvvəllər daha çox öz bildiyi ilə kifayətlənirdi. İndi isə sual verir, maraqlanır və yeni şeyləri özü sınamağa çalışır.", skills:[["Sual vermə","Aktiv"],["Maraq","Artır"],["Tədqiqat","Güclənir"],["Müstəqil sınaq","Aktiv"]], detailTitle:"İnkişaf yönümü: Maraq və tədqiqat", detailIntro:"İrəliləyiş:", detail:"Seyyid sual vermək və yeni ideyaları özü sınamaq vərdişini inkişaf etdirir." },
+  { name:"Həcər", image:"assets/portfolio/hacar.webp", program:"Coolab inkişaf proqramı iştirakçısı", journey:[["Əvvəl","Yeni mühitə uyğunlaşmaq üçün zamana ehtiyac duyurdu."],["Məşq etdi","Fəaliyyətlərdə kiçik addımlarla iştirak etdi."],["Bu gün","Özünü daha rahat hiss edir və aktivdir."]], summary:"Həcər əvvəlcə yeni mühitə uyğunlaşmaq üçün bir az zamana ehtiyac duyurdu. İndi isə özünü daha rahat hiss edir və fəaliyyətlərdə daha aktiv iştirak edir.", skills:[["Uyğunlaşma","Güclənir"],["Fəaliyyətə qoşulma","Aktiv"],["Sosial rahatlıq","Artır"],["İştirak","Güclənir"]], detailTitle:"İnkişaf yönümü: Rahat uyğunlaşma", detailIntro:"İrəliləyiş:", detail:"Həcər yeni mühitdə özünü daha rahat hiss edir və fəaliyyətlərdə aktiv iştirakını davam etdirir." },
+  { name:"Zəhra", image:"assets/portfolio/zahra.webp", program:"Coolab inkişaf proqramı iştirakçısı", journey:[["Əvvəl","Bəzən özünü çəkingən hiss edirdi."],["Məşq etdi","Ünsiyyət və qrup fəaliyyətlərinə qoşuldu."],["Bu gün","Özünü daha rahat ifadə edir."]], summary:"Zəhranın əvvəlcə bir az çəkingən olduğu anlar olurdu. İndi isə həm ünsiyyətdə, həm də qrup fəaliyyətlərində özünü daha rahat göstərir.", skills:[["Ünsiyyət","Güclənir"],["Qrupda iştirak","Aktiv"],["Özünüifadə","Güclənir"],["Özünəinam","Artır"]], detailTitle:"İnkişaf yönümü: Özünüifadə", detailIntro:"İrəliləyiş:", detail:"Zəhra həm ünsiyyətdə, həm də qrup fəaliyyətlərində özünü daha inamla göstərir." },
+  { name:"Mikayıl", image:"assets/portfolio/mikayil.webp", program:"Coolab inkişaf proqramı iştirakçısı", journey:[["Əvvəl","Komanda içində daha rahat ünsiyyət qurmağa başladı."],["Məşq etdi","Məsuliyyət götürərək tapşırıqlarda rol aldı."],["Bu gün","Tapşırıqlara yaradıcı yanaşır."]], summary:"Mikayıl zamanla komanda daxilində daha rahat ünsiyyət qurmağa, məsuliyyət götürməyə və qarşısına çıxan tapşırıqlara yaradıcı yanaşmağa başladı.", skills:[["Komanda işi","Aktiv"],["Məsuliyyət","Güclənir"],["Yaradıcı yanaşma","Aktiv"],["Ünsiyyət","Artır"]], detailTitle:"İnkişaf yönümü: Komanda və yaradıcılıq", detailIntro:"İrəliləyiş:", detail:"Mikayıl komanda işində məsuliyyət götürür və tapşırıqlara yaradıcı həll yolları axtarır." },
+  { name:"Mustafa", image:"assets/portfolio/mustafa.webp", program:"Coolab inkişaf proqramı iştirakçısı", journey:[["Əvvəl","Fəaliyyətlərdə çox önə çıxmırdı."],["Məşq etdi","Uşaqlara qoşulmağa və fikirlərini bölüşməyə başladı."],["Bu gün","Daha aktiv və sərbəst iştirak edir."]], summary:"Əvvəllər daha sakit və öz dünyasında olan Mustafa fəaliyyətlərdə çox önə çıxmırdı. İndi isə uşaqlara daha rahat qoşulur, fikirlərini daha sərbəst ifadə edir və fəaliyyətlərdə daha aktiv iştirak edir.", skills:[["Qrupda iştirak","Aktiv"],["Fikir ifadəsi","Güclənir"],["Ünsiyyət","Artır"],["Özünəinam","Güclənir"]], detailTitle:"İnkişaf yönümü: Aktiv iştirak", detailIntro:"İrəliləyiş:", detail:"Mustafa qrup fəaliyyətlərində daha rahat iştirak edir və fikirlərini sərbəst ifadə etməyə davam edir." },
+  { name:"Zeynəb", image:"assets/portfolio/zeyneb.webp", program:"Coolab inkişaf proqramı iştirakçısı", journey:[["Əvvəl","Yeni mühitə və insanlara uyğunlaşmaq üçün zamana ehtiyac duyurdu."],["Məşq etdi","Fəaliyyətlərə daha çox qoşuldu."],["Bu gün","Özünü sərbəst ifadə edir və aktivdir."]], summary:"Əvvəllər yeni mühitə və insanlara uyğunlaşmaq üçün daha çox zamana ehtiyac duyurdu. İndi isə uşaqlara daha rahat qoşulur, fəaliyyətlərdə aktiv iştirak edir və özünü daha sərbəst ifadə edir.", skills:[["Uyğunlaşma","Güclənir"],["Sosial iştirak","Aktiv"],["Özünüifadə","Artır"],["Özünəinam","Güclənir"]], detailTitle:"İnkişaf yönümü: Rahat iştirak", detailIntro:"İrəliləyiş:", detail:"Zeynəb yeni mühitdə daha rahat ünsiyyət qurur və qrup fəaliyyətlərində aktiv rol alır." },
+];
+
+const portfolioCard = byId("portfolio-card");
+const portfolioCounter = byId("portfolio-counter");
+const portfolioDots = byId("portfolio-dots");
+let portfolioIndex = 0;
+let portfolioAutoplayTimer = null;
+
+const makePortfolioNode = (tag, className, copy = "") => {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (copy) node.textContent = s(copy);
+  return node;
 };
 
-const renderPortfolio = (profileKey) => {
-  const profile = portfolioProfiles[profileKey];
-  if (!profile) return;
-  byId("portfolio-name").textContent = profile.name;
-  byId("portfolio-range").textContent = "2024 → 2026";
-  byId("portfolio-summary").textContent = profile.summary;
-  const years = byId("portfolio-years");
-  const skills = byId("portfolio-skills");
-  years.replaceChildren();
-  skills.replaceChildren();
-  profile.years.forEach(([year, label]) => {
-    const node = document.createElement("div");
-    node.className = "portfolio-year";
-    const title = document.createElement("strong");
-    title.textContent = year;
-    const copy = document.createTextNode(label);
-    node.append(title, copy);
-    years.append(node);
+const renderPortfolioCarousel = (nextIndex = portfolioIndex, animate = true) => {
+  if (!portfolioCard || !portfolioStudents.length) return;
+  const normalizedIndex = (nextIndex + portfolioStudents.length) % portfolioStudents.length;
+  const forwardDistance = (normalizedIndex - portfolioIndex + portfolioStudents.length) % portfolioStudents.length;
+  portfolioCard.dataset.transition = forwardDistance === 0 || forwardDistance <= portfolioStudents.length / 2 ? "next" : "previous";
+  portfolioIndex = normalizedIndex;
+  const profile = portfolioStudents[portfolioIndex];
+  const student = makePortfolioNode("div", "portfolio-student");
+  const image = document.createElement("img");
+  image.src = profile.image;
+  image.alt = `${profile.name} — ${s("Coolab fəaliyyətində şagird")}`;
+  image.loading = "lazy";
+  image.decoding = "async";
+  const heading = document.createElement("div");
+  heading.append(makePortfolioNode("span", "portfolio-label", "Coolab inkişaf xəritəsi"), makePortfolioNode("h3", "", profile.name), makePortfolioNode("p", "", profile.program));
+  student.append(image, heading);
+
+  const journeyHeading = makePortfolioNode("div", "portfolio-journey-title", "İnkişaf yolu");
+  const years = makePortfolioNode("div", "portfolio-years");
+  profile.journey.forEach(([stage, copy]) => {
+    const item = makePortfolioNode("div", "portfolio-year");
+    item.append(makePortfolioNode("strong", "", stage), document.createTextNode(s(copy)));
+    years.append(item);
   });
-  profile.skills.forEach(([label, value]) => {
-    const node = document.createElement("div");
-    node.className = "portfolio-skill";
-    const title = document.createTextNode(label);
-    const score = document.createElement("b");
-    score.textContent = value;
-    node.append(title, score);
-    skills.append(node);
+
+  const summary = makePortfolioNode("div", "portfolio-summary", profile.summary);
+  const skills = makePortfolioNode("div", "portfolio-skills");
+  profile.skills.slice(0, 4).forEach(([label, status]) => {
+    const skill = makePortfolioNode("div", "portfolio-skill", label);
+    skill.append(makePortfolioNode("b", "", status));
+    skills.append(skill);
   });
+
+  const detail = document.createElement("details");
+  detail.className = "portfolio-project-detail";
+  detail.append(makePortfolioNode("summary", "", profile.detailTitle));
+  const detailCopy = makePortfolioNode("div");
+  detailCopy.append(makePortfolioNode("strong", "", profile.detailIntro), document.createTextNode(` ${s(profile.detail)}`));
+  if (profile.skills.length > 4) {
+    const extraSkills = makePortfolioNode("span", "portfolio-extra-skills");
+    extraSkills.append(makePortfolioNode("strong", "", "Əlavə güclənən bacarıqlar:"), document.createTextNode(` ${profile.skills.slice(4).map(([label]) => s(label)).join(", ")}.`));
+    detailCopy.append(extraSkills);
+  }
+  detail.append(detailCopy);
+  portfolioCard.replaceChildren(student, journeyHeading, years, summary, skills, detail);
+  portfolioCard.classList.remove("is-changing");
+  if (animate && !reducedMotion) requestAnimationFrame(() => portfolioCard.classList.add("is-changing"));
+
+  if (portfolioCounter) portfolioCounter.textContent = `${String(portfolioIndex + 1).padStart(2, "0")} / ${String(portfolioStudents.length).padStart(2, "0")}`;
+  if (portfolioDots) {
+    portfolioDots.replaceChildren();
+    portfolioStudents.forEach((studentProfile, index) => {
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = `portfolio-dot${index === portfolioIndex ? " is-active" : ""}`;
+      dot.setAttribute("aria-label", `${s("Şagird portfolio kartı")}: ${studentProfile.name}`);
+      dot.setAttribute("aria-current", String(index === portfolioIndex));
+      dot.addEventListener("click", () => { renderPortfolioCarousel(index); restartPortfolioAutoplay(); });
+      portfolioDots.append(dot);
+    });
+  }
 };
 
-document.querySelectorAll("[data-portfolio-profile]").forEach((button) => {
-  button.addEventListener("click", () => {
-    document.querySelectorAll("[data-portfolio-profile]").forEach((item) => item.classList.toggle("is-active", item === button));
-    renderPortfolio(button.dataset.portfolioProfile);
+const stopPortfolioAutoplay = () => {
+  if (portfolioAutoplayTimer) window.clearInterval(portfolioAutoplayTimer);
+  portfolioAutoplayTimer = null;
+};
+const startPortfolioAutoplay = () => {
+  if (reducedMotion || !portfolioCard || portfolioAutoplayTimer) return;
+  portfolioAutoplayTimer = window.setInterval(() => renderPortfolioCarousel(portfolioIndex + 1), 5000);
+};
+const restartPortfolioAutoplay = () => { stopPortfolioAutoplay(); startPortfolioAutoplay(); };
+
+document.querySelector("[data-portfolio-previous]")?.addEventListener("click", () => { renderPortfolioCarousel(portfolioIndex - 1); restartPortfolioAutoplay(); });
+document.querySelector("[data-portfolio-next]")?.addEventListener("click", () => { renderPortfolioCarousel(portfolioIndex + 1); restartPortfolioAutoplay(); });
+portfolioCard?.addEventListener("keydown", (event) => {
+  if (event.key === "ArrowLeft") { event.preventDefault(); renderPortfolioCarousel(portfolioIndex - 1); restartPortfolioAutoplay(); }
+  if (event.key === "ArrowRight") { event.preventDefault(); renderPortfolioCarousel(portfolioIndex + 1); restartPortfolioAutoplay(); }
+});
+renderPortfolioCarousel(0, false);
+const portfolioCarousel = document.querySelector(".portfolio-carousel");
+portfolioCarousel?.addEventListener("mouseenter", stopPortfolioAutoplay);
+portfolioCarousel?.addEventListener("mouseleave", startPortfolioAutoplay);
+portfolioCarousel?.addEventListener("focusin", stopPortfolioAutoplay);
+portfolioCarousel?.addEventListener("focusout", (event) => { if (!portfolioCarousel.contains(event.relatedTarget)) startPortfolioAutoplay(); });
+document.addEventListener("visibilitychange", () => { if (document.hidden) stopPortfolioAutoplay(); else startPortfolioAutoplay(); });
+startPortfolioAutoplay();
+
+const galleryFilters = [...document.querySelectorAll("[data-gallery-filter]")];
+const galleryShots = [...document.querySelectorAll("[data-gallery-category]")];
+galleryFilters.forEach((filter) => {
+  filter.addEventListener("click", () => {
+    const category = filter.dataset.galleryFilter;
+    galleryFilters.forEach((item) => {
+      const active = item === filter;
+      item.classList.toggle("is-active", active);
+      item.setAttribute("aria-selected", String(active));
+    });
+    galleryShots.forEach((shot) => { shot.hidden = category !== "all" && shot.dataset.galleryCategory !== category; });
   });
+});
+
+if (!reducedMotion) {
+  galleryShots.forEach((shot) => {
+    const image = shot.querySelector("img");
+    shot.addEventListener("pointermove", (event) => {
+      if (!image) return;
+      const bounds = shot.getBoundingClientRect();
+      const horizontal = ((event.clientX - bounds.left) / bounds.width - .5) * 10;
+      const vertical = ((event.clientY - bounds.top) / bounds.height - .5) * 10;
+      image.style.transform = `scale(1.07) translate(${horizontal}px, ${vertical}px)`;
+    });
+    shot.addEventListener("pointerleave", () => { if (image) image.style.transform = ""; });
+  });
+}
+
+document.addEventListener("coolab:localechange", () => {
+  renderCalendar?.();
+  renderPortfolioCarousel(portfolioIndex, false);
+  void updateLabEntryState();
 });
